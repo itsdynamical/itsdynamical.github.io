@@ -1,5 +1,21 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+              tex2jax: {
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                inlineMath: [['$','$']],
+                displayMath: [ ['\\[', '\\]'] ],
+              }
+            });
+          </script>
+          <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script> 
+
+          <script
+          src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+          type="text/javascript">
+        </script><head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
@@ -57,7 +73,9 @@ Date: July 22, 2022 -->
 <h2 id="background">Background</h2>
 <h3 id="gradient-descent">Gradient Descent</h3>
 <p>Machine learning models are often trained by 1st-order optimizers, which are methods that use 1st derivative information to iteratively search the minimum of an objective function. Gradient Descent (GD) is a central one of these optimizers, and even though many results can extend beyond GD, we will focus on GD in this expository blog. GD uses iteration
-\(x_{k+1}=x_k - h \nabla f(x_k)\)
+\[
+    x_{k+1}=x_k - h \nabla f(x_k)
+\]
 where $h$ is the learning rate (LR for short; numerical people also call it stepsize).</p>
 
 <h3 id="the-nice-classical-regime-of-learning-rates">The nice classical regime of learning rates</h3>
@@ -76,31 +94,35 @@ Since the last term is nonpositive as long as $h<2/L$, the result is proved. Not
 
 <p><strong>Thm.</strong> If $f$ is $L-$smooth and $\min f$ exists with $h&lt;\frac{2}{L}$, GD converges to a stationary point.</p>
 
-<hr />
-<p><strong>Proof.</strong> Let $\min f=f^<em>$.
-\begin{align</em>}
-    f(x_{k+1})&amp;\le f(x_k)+\langle\nabla f(x_k),{x_{k+1}-x_k}\rangle+\frac{L}{2}|x_{k+1}-x_k|^2<br />
-    &amp;=f(x_k)-h(1-\frac{L}{2}h)|\nabla f(x_k)|^2.
-\end{align<em>}
-Then
-\begin{align</em>}
-    \sum_{k=1}^N|\nabla f(x_k)|^2&amp;\le \frac{1}{h(1-\frac{L}{2}h)}(f(x_0)-f(x_N))<br />
-    &amp;\le \frac{1}{h(1-\frac{L}{2}h)}(f(x_0)-f^<em>).
-\end{align</em>}
+<hr style="border:1px solid rgb(220,220,220)" />
+
+<p><strong>Proof.</strong> Let $\min f=f^*$.
+\[
+    f(x_{k+1})\le f(x_k)+\langle\nabla f(x_k),{x_{k+1}-x_k}\rangle+\frac{L}{2}|x_{k+1}-x_k|^2
+    =f(x_k)-h(1-\frac{L}{2}h)|\nabla f(x_k)|^2.
+\]</p>
+
+<p>Then
+\[
+    \sum_{k=1}^N|\nabla f(x_k)|^2\le \frac{1}{h(1-\frac{L}{2}h)}(f(x_0)-f(x_N))
+    \le \frac{1}{h(1-\frac{L}{2}h)}(f(x_0)-f^*).
+\]
 Therefore $\lim_{k\to\infty}|\nabla f(x_k)|^2=0$, i.e., GD converges to a stationary point.</p>
 
-<hr />
+<hr style="border:1px solid rgb(220,220,220)" />
 
 <p>Therefore, $h&lt;2/L$ is a nice regime. One fun thing to note though, is that this regime can be further divided. As the following animations show (for a simple $f=x^2/2$), $h&lt;1/L$ leads to continuous motion of $x_k$, but a bigger $h$ gives a discontinuous, oscillatory behavior, however only in $x_k$ but not in $f(x_k)$!</p>
 
-<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/hSmall.gif =320x" alt="permalink setting demo" /><img src="https://mtao8.math.gatech.edu/blog/Jul22/hSmall.png =320x" alt="permalink setting demo" /></p>
+<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/hSmall.gif" alt="permalink setting demo" width="360" /> <img src="https://mtao8.math.gatech.edu/blog/Jul22/hSmall.png" alt="permalink setting demo" width="360" /></p>
 
-<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/hMedium.gif =320x" alt="permalink setting demo" /> <img src="https://mtao8.math.gatech.edu/blog/Jul22/hMedium.png =320x" alt="permalink setting demo" /></p>
+<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/hMedium.gif" alt="permalink setting demo" width="360" /> <img src="https://mtao8.math.gatech.edu/blog/Jul22/hMedium.png" alt="permalink setting demo" width="360" /></p>
 
 <h3 id="nice-part-of-the-nice-regime-and-gradient-flow">Nice part of the nice regime, and gradient flow</h3>
 <p>A computational mathematician would immediately recognize gradient descent as a forward Euler discretization of the gradient flow ODE
-\(\dot{x}=-\nabla f(x)\)
-Obviously in this continuous time / infinitesimal $h$ limit, $x$ is changing continuously. It will be fun to connect to classical numerical analysis and explore where the $h&lt;1/L$ condition mentioned above comes from! It makes gradient descent close to gradient flow. We shall call $h$ such that gradient descent approximates gradient flow ==small LR==.</p>
+\[
+    \dot{x}=-\nabla f(x)
+\]
+Obviously in this continuous time / infinitesimal $h$ limit, $x$ is changing continuously. It will be fun to connect to classical numerical analysis and explore where the $h&lt;1/L$ condition mentioned above comes from! It makes gradient descent close to gradient flow. We shall call $h$ such that gradient descent approximates gradient flow <em>small LR</em>.</p>
 
 <p>However, the larger $h$ becomes, the more GD deviates from gradient flow. Obviously, the oscillatory behavior at $1/L &lt; h &lt; 2/L$ deviates significantly from gradient flow.</p>
 
@@ -112,7 +134,7 @@ Obviously in this continuous time / infinitesimal $h$ limit, $x$ is changing con
 <p>How to precisely do this has been well developed in numerical analysis under the name “backward error analysis”, and the corrected ODE is called “modified equation”. The seminal idea dates back to at least [Wilkinson (1960)] and the subject is beautifully reviewed, for example, in [Hairer, Lubich and Wanner (2006)].</p>
 
 <p>Now let’s apply this general tool to the specific case of GD. Doing it to 1st-order in $h$ gives
-\(\dot{x}=-\nabla f_1(x), \text{ where } f_1(x):=f(x)+\frac{h}{4}\|\nabla f(x)\|^2_2\)
+\[ \dot{x}=-\nabla f_1(x), \text{ where } f_1(x):=f(x)+\frac{h}{4}|\nabla f(x)|^2_2\]
 and it approximates GD in the sense that $x(kh)\approx x_k$, just that for gradient flow (a 0th-order approximation, $f_0:=f$). In this case, the 1st-order modified equation is still a gradient flow, and $f_1$ is thus called a (1st-order) modified potential.</p>
 
 <h3 id="discussions">Discussions</h3>
@@ -127,9 +149,9 @@ and it approximates GD in the sense that $x(kh)\approx x_k$, just that for gradi
 
 <p>These facts can be exemplified by the following plots, where the LR is respectively 1) small so that gradient flow is a good approximation; 2) still $&lt;1/L$, but medium so that gradient flow is insufficient but modified equation is a good approximation; 3) larger, $\in (1/L, 2/L)$, and modified equation no longer works well; 4) truly large, $&gt;2/L$, and for this simple objective function ($f=x^2/2$) GD blows up.</p>
 
-<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/modifiedEq_hSmall.jpg =320x" alt="permalink setting demo" /><img src="https://mtao8.math.gatech.edu/blog/Jul22/modifiedEq_hMedium.jpg =320x" alt="permalink setting demo" /></p>
+<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/modifiedEq_hSmall.jpg" alt="permalink setting demo" width="360" /> <img src="https://mtao8.math.gatech.edu/blog/Jul22/modifiedEq_hMedium.jpg" alt="permalink setting demo" width="360" /></p>
 
-<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/modifiedEq_hMediumPlus.jpg =320x" alt="permalink setting demo" /> <img src="https://mtao8.math.gatech.edu/blog/Jul22/modifiedEq_hLarge.jpg =320x" alt="permalink setting demo" /></p>
+<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/modifiedEq_hMediumPlus.jpg" alt="permalink setting demo" width="360" /> <img src="https://mtao8.math.gatech.edu/blog/Jul22/modifiedEq_hLarge.jpg" alt="permalink setting demo" width="360" /></p>
 
 <p>A remark is, although some literature use modified equation to study “large” LRs, for consistency, throughout this blog we will call such LRs <em>medium</em> instead, because there are larger LRs for which modified equation completely breaks down, and yet GD may still work and produce nontrivial and very interesting behaviors, which oftentimes are beneficial to deep learning.</p>
 
@@ -140,7 +162,7 @@ and it approximates GD in the sense that $x(kh)\approx x_k$, just that for gradi
 <h3 id="welcome-to-the-zoo">Welcome to the zoo</h3>
 <p><strong>Nonconvergence.</strong> The first instinct one might have is, if LR is too large, GD will just blow up (i.e. iterates grow unboundedly). This indeed could happen, such as whenever $h&gt;2/L$ for quadratic objectives, as illustrated below (again for a simple $f=x^2/2$):</p>
 
-<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/hLarge.gif =320x" alt="permalink setting demo" /><img src="https://mtao8.math.gatech.edu/blog/Jul22/hLarge.png =320x" alt="permalink setting demo" /></p>
+<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/hLarge.gif" alt="permalink setting demo" width="360" /> <img src="https://mtao8.math.gatech.edu/blog/Jul22/hLarge.png" alt="permalink setting demo" width="360" /></p>
 
 <p>However, for more complex $f$’s, GD does not necessarily blow up under large LR.</p>
 
@@ -148,7 +170,7 @@ and it approximates GD in the sense that $x(kh)\approx x_k$, just that for gradi
 
 <p><strong>Periodic orbits.</strong> Figures below are examples of periodic motions produced by GD for a miniature matrix factorization problem, with $f(x,y)=(1-xy)^2/2$ (note: seemingly simple, but in fact not $L$-smooth for any $L$, nor convex). Various values of period are possible, but in none of these figures is the convergence to any minimizer.</p>
 
-<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/periodic_orbits.jpg =640x" alt="permalink setting demo" /></p>
+<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/periodic_orbits.jpg" alt="permalink setting demo" width="720" /></p>
 
 <p><code class="language-plaintext highlighter-rouge">GD with h=1.9 converges to three orbits with period 2, 3 and 4 respectively (depending on initial condition). Blue lines are the orbits; red line is a reference line of all minima xy = 1.</code></p>
 
@@ -156,7 +178,7 @@ and it approximates GD in the sense that $x(kh)\approx x_k$, just that for gradi
 
 <p><strong>Strange attractor.</strong> Let’s now take a look at a case of convergence to a chaotic attractor, a famous example of which is <a href="https://en.wikipedia.org/wiki/Lorenz_system">the Lorenz butterfly</a>.</p>
 
-<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/multiscale.gif =320x" alt="permalink setting demo" /><img src="https://mtao8.math.gatech.edu/blog/Jul22/multiscale.png =320x" alt="permalink setting demo" /></p>
+<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/multiscale.gif" alt="permalink setting demo" width="360" /> <img src="https://mtao8.math.gatech.edu/blog/Jul22/multiscale.png" alt="permalink setting demo" width="360" /></p>
 
 <p>These figures are from [Kong and Tao (2020)]. Again, more will be explained,
 right below:</p>
@@ -170,12 +192,14 @@ right below:</p>
 
 <p>Given the objective function $f$, let’s decompose it as $f(\textbf{x})=f_0(\textbf{x})+f_1(\textbf{x})$, where $f_0$ corresponds to macroscopic behavior and $f_1$ encodes microscopic details, such as illustrated by the following 1D example:</p>
 
-<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/f0.jpg =320x" alt="permalink setting demo" /><img src="https://mtao8.math.gatech.edu/blog/Jul22/f.jpg =320x" alt="permalink setting demo" /></p>
+<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/f0.jpg" alt="permalink setting demo" width="360" /> <img src="https://mtao8.math.gatech.edu/blog/Jul22/f.jpg" alt="permalink setting demo" width="360" /></p>
 
 <p>When LR becomes large enough, it is no longer able to resolve the details of $f_1$. This is just like if you drive very fast, small pebbles and bumps on the road can no longer be felt. What is “large enough”? Denote the microscopic scale (when compared to the macroscopic scale) by $\epsilon$ and suppose $f_1$ is $L$-smooth, then $L=\mathcal{\Omega}(1/\epsilon)$ due to 2nd-order spatial derivative, which means traditional small LR is $h=o(1/L)=o(\epsilon)$. If $h=o(1)$ instead, independent of $\epsilon$, then $h\gg 1/L$, and it is large enough.</p>
 
 <p>Using this setup, [Kong and Tao (2020)] rigorously proved that the microscopic part of the gradient, $-h\nabla f_1(\textbf{x})$, effectively acts <strong>like</strong> a noisy forcing to the <strong>deterministic</strong> GD dynamics. In fact, using tools from dynamical systems, probability, and functional analysis, they proved that the GD iterates actually converge to a chaotic attractor, and hence to a statistical distribution, which is very close to
-\(Z^{-1} \exp(-f_0(\textbf{x})/T)d\textbf{x}\)
+\[
+    Z^{-1} \exp(-f_0(\textbf{x})/T)d\textbf{x}
+\]
 under reasonable assumptions. Those familiar with statistical mechanics can immediately recognize this approximate distribution as the famous Gibbs distribution. Rather notably, this distribution, being the limit of GD, only depends on the large scale part of the objective, $f_0$, and small details encoded by $f_1$ are <em>not even seen</em> anymore, as a consequence of a large LR ($h\gg 1/L$)!</p>
 
 <p>This quantitative result also suggests that smaller values of $f_0$ (and $f$ too) will have (significantly) higher probability, which roughly means they will be visited more often after many GD iterations. This is usually desirable (smaller training loss, likely beneficial for test accuracy as well), and thus a benefit of large LR.</p>
@@ -184,7 +208,7 @@ under reasonable assumptions. Those familiar with statistical mechanics can imme
 
 <p>A lot more details can be found in [Kong and Tao (2020)], but here is a final excerpt: do objective functions in real problems admit such multiscale structures? Both theoretical and empirical discussions were given in their paper. For example, if training data is multiscale, it is theoretically possible that the loss of a neural network, for regressing the data, inherits a multiscale structure! Here is what GD iterations give for an examplary weight parameter during training a small feedforward network:</p>
 
-<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/weightLimit.jpg =320x" alt="permalink setting demo" /></p>
+<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/weightLimit.jpg" alt="permalink setting demo" width="360" /></p>
 
 <p>You see it doesn’t converge to any single value, but rather “blobs”, whose concatenation is actually (the projection / marginal support) of a chaotic strange attractor / probability distribution.</p>
 
@@ -203,7 +227,9 @@ This conjecture is much more recent, but due to its importance, attention is rap
 <p>[Wang et al (2022)] went beyond medium LRs for which modified potential works, and studied large LRs, for which the preference of flatter minimum is even more pronounced. They provided a rigorous proof of <code class="language-plaintext highlighter-rouge">Popular Conjecture 2</code>, for a subclass of problems.</p>
 
 <p>More precisely, consider a matrix factorization task formulated as an optimization problem
-\(\min_{X,Y}~ \frac{1}{2} \|A-XY^\top\|^2,\quad \text{where}\ A\in\mathbb{R}^{n\times n},\ X,Y\in\mathbb{R}^{n\times d}.\)
+\[
+\min_{X,Y}~ \frac{1}{2} |A-XY^\top|^2,\quad \text{where}\ A\in\mathbb{R}^{n\times n},\ X,Y\in\mathbb{R}^{n\times d}.
+\]
 where one tries to find a rank $d$ approximation of $n\times n$ matrix $A$. This is a rather general and important data science problem per se, but for those interested in deep learning, it is also almost the same as the training of a 2-layer linear neural network.</p>
 
 <p>The landscape of $f(X,Y):=\frac{1}{2} |A-XY^\top|^2$ is intriguing. For example, 1) minimizers are not isolated or countable; in fact, if $(X,Y)$ is a minimizer, so is $(cX,Y/c)$ for any constant scalar $c\ne 0$. The authors call this property homogenity, and it persists even if certain nonlinear activations are applied, for example for $\frac{1}{2} |A-X\sigma(Y^\top)|^2$ where $\sigma$ is ReLU or leaky-ReLU. 2) each local minimizer is a global minimizer.</p>
@@ -214,7 +240,7 @@ where one tries to find a rank $d$ approximation of $n\times n$ matrix $A$. This
 
 <p>[Wang et al (2022)] showed that, if the LR is large enough, GD will start to pick minimizers with balanced norms. Moreover, the larger LR is, the more balance GD can create. No regularizer is needed. Here is a visualization based on a simplest example; see how GD can travel afar to gain balance (and hence flatness) via large LR, even when the initial condition is already close to an unbalanced minimizer and small LR simply takes you there.</p>
 
-<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/largeLRflat.jpg =640x" alt="permalink setting demo" /></p>
+<p><img src="https://mtao8.math.gatech.edu/blog/Jul22/largeLRflat.jpg" alt="permalink setting demo" width="720" /></p>
 
 <p>(Side remark: in a way, [Wang et al (2022)] can also be thought as related to a phenomenon known as Edge of Stability that was empirically discovered recently [Cohen et al (2021)] and starting to attract attention.)</p>
 
@@ -226,13 +252,25 @@ where one tries to find a rank $d$ approximation of $n\times n$ matrix $A$. This
 
 <p><strong>TL;DR</strong> [Wang et al (2022)] show that GD has, when the LR is truly large, an implicit regularization effect of converging to flatter local min. Larger LR makes the implicit bias stronger.</p>
 
-<hr />
+<hr style="border:1px solid rgb(220,220,220)" />
 
 <h2 id="thank-you-for-reading">Thank you for reading</h2>
 
 <p>That’s it for this blog, which is just the tip of an iceberg. For the sake of length and the diversity of readers, there are a lot of rigor and details, as well as related work, that are omitted and sacrificed. But questions and comments are always welcomed. We hope you liked it, and please feel free to cite!</p>
 
 <h2 id="references">References</h2>
+
+<p>[1]: J.H.Wilkinson. Error analysis of floating-point computation. Numer. Math. 1960</p>
+
+<p>[2]: Ernst Hairer, Christian Lubich, and Gerhard Wanner. Geometric Numerical Integration. Springer 2006</p>
+
+<p>[3]: Qianxiao Li, Cheng Tai, and Weinan E. Stochastic modified equations and dynamics of stochastic gradient algorithms i: Mathematical foundations. JMLR 2019</p>
+
+<p>[4]: Lingkai Kao and Molei Tao. Stochasticity of deterministic gradient descent: Large learning rate for multiscale objective function. NeurIPS 2020</p>
+
+<p>[5]: Yuqing Wang, Minshuo Chen, Tuo Zhao, and Molei Tao. Large Learning Rate Tames Homogeneity: Convergence and Balancing Effect. ICLR 2022</p>
+
+<p>[6]: Jeremy Cohen, Simran Kaur, Yuanzhi Li, J. Zico Kolter, and Ameet Talwalkar. Gradient descent on neural networks typically occurs at the edge of stability. ICLR 2021</p>
 
 
   </div><a class="u-url" href="/article/2022/07/25/large-learning-rate.html" hidden></a>
