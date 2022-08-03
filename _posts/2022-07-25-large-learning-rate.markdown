@@ -2,8 +2,11 @@
 layout: post
 title:  "Fun facts about large learning rates: how large is large, and what tricks they can do?"
 author: Molei Tao and Yuqing Wang
+# author_homepage: https://mtao8.math.gatech.edu
+# author: Yuqing Wang
 date:   2022-07-25 14:36:38 -0400
 categories: article
+comments_id: 1
 ---
 <!-- 
 # Fun facts about large learning rates: how large is large, and what tricks they can do?
@@ -34,7 +37,7 @@ Since the last term is nonpositive as long as $h<2/L$, the result is proved. Not
 --- -->
 
 
-**Thm.** If $f$ is $L-$smooth and $\min f$ exists with $h<\frac{2}{L}$, GD converges to a stationary point.
+**Thm.** If $f$ is $L-$smooth, $\min f$ exists, and $h<\frac{2}{L}$, GD converges to a stationary point.
                                                    
 <hr style="border:1px solid rgb(220,220,220)">
 **Proof.** Let $\min f=f^*$.
@@ -203,7 +206,7 @@ Expert readers may ask, hold on, what is $L$? In fact, the objective function is
 
 ## Thank you for reading
 
-That's it for this blog, which is just the tip of an iceberg. For the sake of length and the diversity of readers, there are a lot of rigor and details, as well as related work, that are omitted and sacrificed. But questions and comments are always welcomed. We hope you liked it, and please feel free to cite!
+That's it for this blog, which is just the tip of an iceberg. For the sake of length and the diversity of readers, there are a lot of rigor and details, as well as related work, that are omitted and sacrificed. But questions and comments are always welcome. We hope you liked it, and please feel free to cite!
 
 
 ## References
@@ -219,4 +222,10 @@ That's it for this blog, which is just the tip of an iceberg. For the sake of le
 \[5]: Yuqing Wang, Minshuo Chen, Tuo Zhao, and Molei Tao. Large Learning Rate Tames Homogeneity: Convergence and Balancing Effect. ICLR 2022
 
 \[6]: Jeremy Cohen, Simran Kaur, Yuanzhi Li, J. Zico Kolter, and Ameet Talwalkar. Gradient descent on neural networks typically occurs at the edge of stability. ICLR 2021
+
+#### Authors' homepages: 
+[Molei Tao](https://mtao8.math.gatech.edu),  [Yuqing Wang](https://ywang3398.math.gatech.edu)
+
+
+ 
 

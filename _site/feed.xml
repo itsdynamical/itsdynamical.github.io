@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-07-25T21:48:24-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">It’s dynamical</title><subtitle></subtitle><entry><title type="html">Fun facts about large learning rates: how large is large, and what tricks they can do?</title><link href="http://localhost:4000/article/2022/07/25/large-learning-rate.html" rel="alternate" type="text/html" title="Fun facts about large learning rates: how large is large, and what tricks they can do?" /><published>2022-07-25T14:36:38-04:00</published><updated>2022-07-25T14:36:38-04:00</updated><id>http://localhost:4000/article/2022/07/25/large-learning-rate</id><content type="html" xml:base="http://localhost:4000/article/2022/07/25/large-learning-rate.html">&lt;!-- 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-08-03T15:57:41-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">It’s dynamical</title><subtitle>A blog for exchanging ideas at the intersection of machine learning and stochastic / computational / nonlinear dynamics.</subtitle><entry><title type="html">Fun facts about large learning rates: how large is large, and what tricks they can do?</title><link href="http://localhost:4000/article/2022/07/25/large-learning-rate.html" rel="alternate" type="text/html" title="Fun facts about large learning rates: how large is large, and what tricks they can do?" /><published>2022-07-25T14:36:38-04:00</published><updated>2022-07-25T14:36:38-04:00</updated><id>http://localhost:4000/article/2022/07/25/large-learning-rate</id><content type="html" xml:base="http://localhost:4000/article/2022/07/25/large-learning-rate.html">&lt;!-- 
 # Fun facts about large learning rates: how large is large, and what tricks they can do?
 
 Authors: Molei Tao and Yuqing Wang
@@ -26,7 +26,7 @@ Since the last term is nonpositive as long as $h&lt;2/L$, the result is proved. 
 
 --- --&gt;
 
-&lt;p&gt;&lt;strong&gt;Thm.&lt;/strong&gt; If $f$ is $L-$smooth and $\min f$ exists with $h&amp;lt;\frac{2}{L}$, GD converges to a stationary point.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Thm.&lt;/strong&gt; If $f$ is $L-$smooth, $\min f$ exists, and $h&amp;lt;\frac{2}{L}$, GD converges to a stationary point.&lt;/p&gt;
 
 &lt;hr style=&quot;border:1px solid rgb(220,220,220)&quot; /&gt;
 
@@ -190,7 +190,7 @@ where one tries to find a rank $d$ approximation of $n\times n$ matrix $A$. This
 
 &lt;h2 id=&quot;thank-you-for-reading&quot;&gt;Thank you for reading&lt;/h2&gt;
 
-&lt;p&gt;That’s it for this blog, which is just the tip of an iceberg. For the sake of length and the diversity of readers, there are a lot of rigor and details, as well as related work, that are omitted and sacrificed. But questions and comments are always welcomed. We hope you liked it, and please feel free to cite!&lt;/p&gt;
+&lt;p&gt;That’s it for this blog, which is just the tip of an iceberg. For the sake of length and the diversity of readers, there are a lot of rigor and details, as well as related work, that are omitted and sacrificed. But questions and comments are always welcome. We hope you liked it, and please feel free to cite!&lt;/p&gt;
 
 &lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
 
@@ -204,4 +204,7 @@ where one tries to find a rank $d$ approximation of $n\times n$ matrix $A$. This
 
 &lt;p&gt;[5]: Yuqing Wang, Minshuo Chen, Tuo Zhao, and Molei Tao. Large Learning Rate Tames Homogeneity: Convergence and Balancing Effect. ICLR 2022&lt;/p&gt;
 
-&lt;p&gt;[6]: Jeremy Cohen, Simran Kaur, Yuanzhi Li, J. Zico Kolter, and Ameet Talwalkar. Gradient descent on neural networks typically occurs at the edge of stability. ICLR 2021&lt;/p&gt;</content><author><name>Molei Tao and Yuqing Wang</name></author><category term="article" /><summary type="html">&amp;lt;!– Fun facts about large learning rates: how large is large, and what tricks they can do?</summary></entry></feed>
+&lt;p&gt;[6]: Jeremy Cohen, Simran Kaur, Yuanzhi Li, J. Zico Kolter, and Ameet Talwalkar. Gradient descent on neural networks typically occurs at the edge of stability. ICLR 2021&lt;/p&gt;
+
+&lt;h4 id=&quot;authors-homepages&quot;&gt;Authors’ homepages:&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&quot;https://mtao8.math.gatech.edu&quot;&gt;Molei Tao&lt;/a&gt;,  &lt;a href=&quot;https://ywang3398.math.gatech.edu&quot;&gt;Yuqing Wang&lt;/a&gt;&lt;/p&gt;</content><author><name>Molei Tao and Yuqing Wang</name></author><category term="article" /><summary type="html">&amp;lt;!– Fun facts about large learning rates: how large is large, and what tricks they can do?</summary></entry></feed>
