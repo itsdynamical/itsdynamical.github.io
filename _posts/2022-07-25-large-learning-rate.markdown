@@ -1,7 +1,9 @@
 ---
 layout: post
 title:  "Fun facts about large learning rates: how large is large, and what tricks they can do?"
-author: Molei Tao and Yuqing Wang
+author: 
+- Molei Tao
+- Yuqing Wang
 # author_homepage: https://mtao8.math.gatech.edu
 # author: Yuqing Wang
 date:   2022-07-25 14:36:38 -0400

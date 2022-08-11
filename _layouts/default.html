@@ -2,6 +2,7 @@
 <html lang="{{ page.lang | default: site.lang | default: "en" }}">
 
 <head>
+  {% seo %}
         <script type="text/x-mathjax-config">
             MathJax.Hub.Config({
               tex2jax: {
@@ -17,6 +18,7 @@
           src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
           type="text/javascript">
         </script>
+        <meta name="google-site-verification" content="lK9m8rMVQosD_xjmc_IEr6hybTWtvZ6Q072Phl699us" />
         <link rel="stylesheet" href="/assets/css/style.css">
   </head>
   {%- include head.html -%}
