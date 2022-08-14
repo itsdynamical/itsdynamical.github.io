@@ -210,6 +210,8 @@ Expert readers may ask, hold on, what is $L$? In fact, the objective function is
 
 That's it for this blog, which is just the tip of an iceberg. For the sake of length and the diversity of readers, there are a lot of rigor and details, as well as related work, that are omitted and sacrificed. But questions and comments are always welcome. We hope you liked it, and please feel free to cite!
 
+## Acknowledgement
+We thank Tuo Zhao for encouraging us to write a blog.
 
 ## References
 
@@ -224,6 +226,8 @@ That's it for this blog, which is just the tip of an iceberg. For the sake of le
 \[5]: Yuqing Wang, Minshuo Chen, Tuo Zhao, and Molei Tao. Large Learning Rate Tames Homogeneity: Convergence and Balancing Effect. ICLR 2022
 
 \[6]: Jeremy Cohen, Simran Kaur, Yuanzhi Li, J. Zico Kolter, and Ameet Talwalkar. Gradient descent on neural networks typically occurs at the edge of stability. ICLR 2021
+
+
 
 #### Authors' homepages: 
 [Molei Tao](https://mtao8.math.gatech.edu),  [Yuqing Wang](https://ywang3398.math.gatech.edu)
