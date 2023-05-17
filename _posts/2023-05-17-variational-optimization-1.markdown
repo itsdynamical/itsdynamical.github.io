@@ -240,4 +240,4 @@ $$
 
 where $Y\in\mathbb{R}^{m\times m}, V\in\mathbb{R}^{n\times m}$. We can see (Eq. 6a) and (Eq. 6b) are just the ODE (Eq. 5) for optimizing on $\mathsf{SO}(n)$.
 
-Until now, we have seen the Lagrange's beautiful view about mechanics and how to generalize this view to some curved manifolds to have an ODE optimizing a function. However, to have an algorithm, we need to have a numerical integrator the ODE. However, this is nontrivial. The manifold is curved and the commonly used Euclidean numerical integrator will not work. It needs to be specially designed. Please see the [part II](_posts/2023-05-17-variational-optimization-2.markdown) of this blog.
+Until now, we have seen the Lagrange's beautiful view about mechanics and how to generalize this view to some curved manifolds to have an ODE optimizing a function. However, to have an algorithm, we need to have a numerical integrator the ODE. However, this is nontrivial. The manifold is curved and the commonly used Euclidean numerical integrator will not work. It needs to be specially designed. Please see the [part II](variational-optimization-2.html) of this blog.
