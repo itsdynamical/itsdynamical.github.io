@@ -61,13 +61,19 @@ Here, the structure perserving comes from the carefully chosen splitting: we fou
 Going through all these nontrivialities is worthful, as now we can finally have many great applications:
 ### Subspace persuing: finding the best linear subspace for projection
 Subspace pursuing view a Stiefel matrix as a projection from $n$-dim spaces to a $m$-dim subspace with its columns. Suppose we have a dataset $\lbrace x_i \rbrace_{i=1}^k$ with $x_i$ in $\mathbb{R}^n$ and a function $f$. Sometimes, when the dimension $n$ is high, the function can be too costly to evaluate. To solve this difficulty, instead of evaluating our function $f(\lbrace x_i\rbrace_{i=1}^k)$ directly, we consider the optimization problem
+
 $$\max_{U\in \mathsf{St}(n,m)} f(\lbrace U^\top x_i\rbrace_{i=1}^k).$$ 
+
 $U$ can be viewed as a projection to a low-dimensional subspace. We take the maximum of $U$ in the sense that the information is preserved as much as we can with the column of $U$ being a set of the orthonormal basis of the subspace. If we choose $m\ll n$, then this can significantly save computational resources. Here are 2 examples for subspace pursuing.
 #### Leading EigenValue (LEV) problem
 Given an $n\times n$ matrix $A$, the task is to get the top $m$ eigenvalues. Simply computing all the $n$ eigenvalues and sorting them can be too expensive and wasteful in the case $m\ll n$. Instead, we consider converting it to the following optimization problem by subspace pursuing.
+
 $$\max_{U\in \mathsf{St}(n,m)} \text{tr}(U^\top A U)$$
+
 The maximum is in the sense that after being projected, the matrix $A$ has the largest sum of eigenvalues. If we want to use the Lie group optimizer, we need to write it as the following instead
+
 $$\max_{R\in \mathsf{SO}(n)} \text{tr}(E^\top R^\top A RE)$$
+
 where 
 
 $$E=\begin{pmatrix}
@@ -85,7 +91,9 @@ The great idea of [Projection Robust Wasserstein Distance](https://arxiv.org/pdf
 $$W_2(\mu,\nu) := \min_{\pi \in \Pi(\mu,\nu)} \left( \int \|x-y\|^2 \,d\pi(x,y) \right)^{1/2}$$
 
 It tries to find a coupling of $\mu$ and $\nu$ whose cost is the lowest. Solving this problem numerically can be costly when the dimension is high. The beautiful idea of PRW bypasses this difficulty by projecting the 2 distributions to lower dimensional subspaces and then computing the $W_2$ distance in this lower dimensional space instead, i.e.,
+
 $$P_m(\mu,\nu) := \max_{U\in \mathsf{St}(n,m)} \min_{\pi \in \Pi(\mu,\nu)} \left( \int \|U^\top x - U^\top y\|^2 \,d\pi(x,y) \right)^{1/2}$$
+
 Same as mentioned before, the maximization is in the sense of keeping as much information as possible. This approach not only makes the problem computationally more manageable when $m\ll n$. What's more, since the dimensions that are relatively less important are omitted after projection, the noise is also reduced and only the essential component is left, which increases the robustness compared to the vanilla $W_2$ distance.
 
 ### Orthogonality Boosts the Performance of Transformer Models
