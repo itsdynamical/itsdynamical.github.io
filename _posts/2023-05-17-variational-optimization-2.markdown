@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Variational Optimization with Generalization to Manifold (Part II)"
+title:  "Variational Optimization, and How It Works for Manifolds (Part II)"
 author: 
 - Lingkai Kong
 - Molei Tao
@@ -11,7 +11,7 @@ categories: article
 comments_id: 1
 ---
 
-In the [part I](_posts/2023-05-17-variational-optimization-1.markdown) of the blog, the continuous picture is finished with no artificial step involved. In this blog, we focus on solving the second difficulty: structure preserving discretization. And after solving both of the 2 difficulties, we have a variational optimizer and we will see some interesting applications: [improve the performance of Transformer model](#orthogonality-boosts-the-performance-of-transformer-models) and [estimate the Wasserstein distance in high dimensional cases](#projection-robust-wasserstein-prw-distance).  Code can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
+In the [part I](variational-optimization-1.html) of the blog, the continuous picture is finished with no artificial step involved. In this blog, we focus on solving the second difficulty: structure preserving discretization. And after solving both of the 2 difficulties, we have a variational optimizer and we will see some interesting applications: [improve the performance of Transformer model](#orthogonality-boosts-the-performance-of-transformer-models) and [estimate the Wasserstein distance in high dimensional cases](#projection-robust-wasserstein-prw-distance).  Code can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
 ## Nontrivial Discretization for Computationally Efficient Structure Preservation
 Structure preserving means the manifold structure is preserved, i.e., keep the point always stays on the manifold. In the continuous case, the manifold structure is preserved since the variational problem is done among all the curves on the manifold.
 
