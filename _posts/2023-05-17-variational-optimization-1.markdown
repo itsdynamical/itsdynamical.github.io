@@ -105,7 +105,9 @@ $$\begin{cases}
 \tag{3}$$
 
 You may have heard of the big name Lagrange even if you are not an expert in physics. He has an elegant view of the ODE (2). Consider the space of all the smooth parametric curves, i.e., all the map $t\rightarrow \mathbb{R}^d, t\in [0,T]$. This is a large space, but Lagrange defines a function called Lagrangian $L(x,\dot{x}, t)=\frac{1}{2}\|\dot{x}(t)\|^2-f(x(t))$. Consider the functional $\mathcal{S}$ defined as
+
 $$\mathcal{S}[x]:=\int_0^T L(x, \dot{x}, t)$$
+
 Here $\mathcal{S}$ takes in a parametric curve and outputs a real number. Lagrange tells us that
 > If a curve $x(t), t\in [0,T]$ is a 'critical curve' of the functional $\mathcal{S}$, then it must be a solution of the ODE (Eq. 3).
 
