@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "Variational Optimization, and How It Works for Manifolds"
-author: 
-- Molei Tao
+title:  "Variational Optimization, and How It Works for Manifolds (Part I)"
+author:
 - Lingkai Kong
+- Molei Tao
 # author_homepage: https://mtao8.math.gatech.edu
 # author: Lingkai Kong
 date:   2023-05-17
@@ -25,9 +25,13 @@ Although the intuition for (momentum) GD is quite straightforward, a different v
 
 ### Gradient Descent
 The commonly used gradient descent has iteration 
+
 $$x_{k+1}=x_k-h\nabla f(x_k)$$
+
 where $h$ is called the learning rate/step size. This iterative algorithm comes from discretizing the gradient flow:
+
 $$\dot{x}=-\nabla f(x)$$
+
 In order to accelerate the convergence, people introduce 'momentum' into gradient descent.
 ### Gradient Descent with Momentum: Newton's View
 The commonly used gradient descent with momentum ([torch.optim.SGD](https://pytorch.org/docs/stable/generated/torch.optim.SGD.html)) has the following iteration:
@@ -236,4 +240,4 @@ $$
 
 where $Y\in\mathbb{R}^{m\times m}, V\in\mathbb{R}^{n\times m}$. We can see (Eq. 6a) and (Eq. 6b) are just the ODE (Eq. 5) for optimizing on $\mathsf{SO}(n)$.
 
-Until now, we have seen the Lagrange's beautiful view about mechanics and how to generalize this view to some curved manifolds to have an ODE optimizing a function. However, to have an algorithm, we need to have a numerical integrator the ODE. However, this is nontrivial. The manifold is curved and the commonly used Euclidean numerical integrator will not work. It needs to be specially designed. Please see the [second part](link) of this blog.
+Until now, we have seen the Lagrange's beautiful view about mechanics and how to generalize this view to some curved manifolds to have an ODE optimizing a function. However, to have an algorithm, we need to have a numerical integrator the ODE. However, this is nontrivial. The manifold is curved and the commonly used Euclidean numerical integrator will not work. It needs to be specially designed. Please see the [part II](_posts/2023-05-17-variational-optimization-2.markdown) of this blog.
