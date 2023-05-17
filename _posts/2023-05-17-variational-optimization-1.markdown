@@ -201,7 +201,9 @@ We denote the position as $X$ and the momentum as $Q$. Both of them are $n\text{
 $$X^\top X=I, \quad Q^\top X+X^\top Q=0$$
 
 We define the Lagrangian as
+
 $$L:=r(t)\left(\frac{1}{2}\langle \dot{X}, \dot{X}\rangle-f(X)\right)$$
+
 $\langle Q_1, Q_2\rangle:=tr(Q_1^\top Q_2)$ is the inner product.
 
 Instead of using an abstract, intrinsic way of variational principle in the last section about $\mathsf{SO}(n)$, here we will have a different approach: constraint Lagrangian [[Chen, Li & Tao]](https://arxiv.org/pdf/2103.12767.pdf). The reason is that the Stiefel manifold lacks the group structure of $\mathsf{SO}(n)$ and cannot perform the left-trivialization.
@@ -212,7 +214,9 @@ The variational problem on the manifold can be written as
 $$\delta\int_0^T L(X(t), \dot{X}(t), t)\,dt=0,\quad s.t.X^\top X=I, \,\forall 0\le t\le T$$
 
 We can see the constraint is nonlinear, and the variational problem can be hard to solve. As a result, we introduce a Lagrange multiplier function $\Lambda$ (an $n\times n$ symmetric matrix that depends on time) and the Lagrangian becomes
+
 $$\hat{L}(X, \dot{X}, \Lambda, t)=r(t)\Big[\frac{1}{2}\text{tr}\left(\dot{X}^\top(I-aXX^\top)\dot{X}\right)-f(X)\Big]-\frac{1}{2}\text{tr}\left(\Lambda^\top(X^\top X-I)\right)$$
+
 Then we have a variational problem in a flat, Euclidean space. We can solve $\Lambda$ explicitly and also solve the variational problem to get the following ODE
 
 $$
