@@ -11,3 +11,4 @@ This blog is initiated by Molei Tao’s research group at Georgia Tech.
     
 [Yuqing Wang](https://ywang3398.math.gatech.edu)
     
+Lingkai Kong
