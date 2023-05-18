@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Variational Optimization, and How It Works for Manifolds (Part II)"
+title:  "Variational Optimization, and How It Works for Manifolds (Part II the discrete side of the story)"
 author: 
 - Lingkai Kong
 - Molei Tao
@@ -128,4 +128,4 @@ Blue: best within classes. Underscore: best over all classes. Green: unconstrain
 
 1. Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani et al. "An image is worth 16x16 words: Transformers for image recognition at scale." International Conference on Learning Representations (2021).
 
-1. Andre Wibisono, Ashia C. Wilson, and Michael I. Jordan. "A variational perspective on accelerated methods in optimization." proceedings of the National Academy of Sciences 113, no. 47 (2016): E7351-E7358.
+1. Andre Wibisono, Ashia C. Wilson, and Michael I. Jordan. "A variational perspective on accelerated methods in optimization." Proceedings of the National Academy of Sciences 113, no. 47 (2016): E7351-E7358.
