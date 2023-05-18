@@ -80,6 +80,7 @@ You must have heard that momentum 'accumulates gradient descent'. Here is a supe
 Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_k)-f(x^*)$ for discrete cases and $f(x_t)-f(x^*)$ for continuous cases. 
 
 We assume the $f$ to be convex and $L$-smooth ($L$-smooth means $\|\nabla f(x)-\nabla f(y)\|\le L\|x-y\|$ for all $x,y$). If we choose $\gamma$ as shown, we have the following convergence rate:
+
 |          |  GD | Momentum GDE|
 | -------- | ------- |---------|
 | Continuous case <p> $f(x_t)-f(x^*)$ | Eq. 2 <p>$\mathcal{O}\left(\frac{1}{t}\right)$   | Eq. 4 ($\gamma_t=\frac{3}{t}$)<p>$\mathcal{O}\left(\frac{1}{t^2}\right)$ |
