@@ -24,7 +24,7 @@ When it comes to the discretization of ODEs on the manifold, things gets harder.
 If the numerical discretization is not done properly, the manifold structure may fail to be preserved. Imagine a point is moving continuously on the surface of a ball and of course, the trajectory is structure preserving. But after being discretized, at each time step, the point goes one step forward to a tangent direction by forward Euler. In this discrete case, the point is no longer on the ball but becomes a 'satellite' because you are in the space out of the ball. In other words, even the ODE is structure preserving, 
 > The discretization error from a Euclidean numerical integrator like forward-Euler or Runge-Kutta may lead to the loss of manifold structure.
 
-We use the example of $\mathsf{SO}(n)$ to give an example of structure preserving numerical integrator. The Stiefel case is too complicated to be shown here. The ODE optimizing on $\mathsf{SO}(n)$ is Eq. 5 and we copy it here again for convenience:
+We use the example of $\mathsf{SO}(n)$ to give an example of structure preserving numerical integrator. The Stiefel case is too complicated to be shown here. The ODE optimizing on $\mathsf{SO}(n)$ is Eq. 7 and we copy it here again for convenience:
 
 $$\begin{cases}
 \dot{g}=g\xi\\
