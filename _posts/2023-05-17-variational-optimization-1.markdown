@@ -20,6 +20,7 @@ Codes for both general optimizers and specific applications can be found [here](
 
 ## Gradient Descent with Momentum: A variational approach
 Consider the optimization problem $\min_{x\in\mathbb{R}^d} f(x)$. 
+
 <!--- The most widely-used type of optimizers in machine learning is called gradient-based optimizers, it assumes the accessibility of the function $f$ and its gradient $\nabla f$. If you are a researcher in machine learning or applied math, you must be heard of the optimization algorithm gradient descent and momentum gradient descent, which are the most famous gradient-based optimizers.
 
 Although the intuition for (momentum) GD is quite straightforward, a different view of momentum GD via a variational approach is provided here. The reason is this approach is easier to generalize to the manifold using this more fundamental approach.
@@ -80,6 +81,7 @@ You must have heard that momentum 'accumulates gradient descent'. Here is a supe
 Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_k)-f(x^*)$ for discrete cases and $f(x_t)-f(x^*)$ for continuous cases. 
 
 We assume the $f$ to be convex and $L$-smooth ($L$-smooth means $\|\nabla f(x)-\nabla f(y)\|\le L\|x-y\|$ for all $x,y$). If we choose $\gamma$ as shown, we have the following convergence rate:
+
 |          |  GD | Momentum GD |
 | -------- | ------- |---------|
 | Continuous case <p> $f(x_t)-f(x^*)$ | Eq. 2 <p>$\mathcal{O}\left(\frac{1}{t}\right)$   | Eq. 4 ($\gamma_t=\frac{3}{t}$)<p>$\mathcal{O}\left(\frac{1}{t^2}\right)$ |
