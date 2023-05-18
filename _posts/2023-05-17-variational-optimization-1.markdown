@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Variational Optimization, and How It Works for Manifolds (Part I the continuous side)"
+title:  "Variational Optimization, and How It Works for Manifolds (Part I the continuous side of the story)"
 author:
 - Lingkai Kong
 - Molei Tao
@@ -20,7 +20,6 @@ Codes for both general optimizers and specific applications can be found [here](
 
 ## Gradient Descent with Momentum: A variational approach
 Consider the optimization problem $\min_{x\in\mathbb{R}^d} f(x)$. 
-
 <!--- The most widely-used type of optimizers in machine learning is called gradient-based optimizers, it assumes the accessibility of the function $f$ and its gradient $\nabla f$. If you are a researcher in machine learning or applied math, you must be heard of the optimization algorithm gradient descent and momentum gradient descent, which are the most famous gradient-based optimizers.
 
 Although the intuition for (momentum) GD is quite straightforward, a different view of momentum GD via a variational approach is provided here. The reason is this approach is easier to generalize to the manifold using this more fundamental approach.
@@ -81,8 +80,7 @@ You must have heard that momentum 'accumulates gradient descent'. Here is a supe
 Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_k)-f(x^*)$ for discrete cases and $f(x_t)-f(x^*)$ for continuous cases. 
 
 We assume the $f$ to be convex and $L$-smooth ($L$-smooth means $\|\nabla f(x)-\nabla f(y)\|\le L\|x-y\|$ for all $x,y$). If we choose $\gamma$ as shown, we have the following convergence rate:
-
-|          |  GD | Momentum GD |
+|          |  GD | Momentum GDE|
 | -------- | ------- |---------|
 | Continuous case <p> $f(x_t)-f(x^*)$ | Eq. 2 <p>$\mathcal{O}\left(\frac{1}{t}\right)$   | Eq. 4 ($\gamma_t=\frac{3}{t}$)<p>$\mathcal{O}\left(\frac{1}{t^2}\right)$ |
 | Discrete case <p> $f(x_k)-f(x^*)$ | Eq. 1 ($h\le 1/L$)<p> $\mathcal{O}\left(\frac{1}{k}\right)$   | Eq. 3 ($h_k=\sqrt{s\frac{k-1}{k+2}}$ $\gamma_k=\frac{3}{(k+2)h_k}$ for $s\le 1/L$) <p> $\mathcal{O}\left(\frac{1}{k^2}\right)$ |
@@ -166,8 +164,8 @@ In the following, we will generalize this beautiful approach first to Lie groups
 
 To see that, let's list the main steps of designing momentum GD in Euclidean space using a variational approach:
 - Define a dissipative Lagrangian
-- Solve the variational problem and get an ODE
-- Design a numerical discretization
+- Solve the variational problem to get an ODE
+- Design a numerical discretization of the ODE
 
 We can see only a Lagrange function $L$ can characterize the motion of a particle. This means, we just need to have a Lagrangian $L$ and the variation principle gives us the ODE characterizing its motion. The Lagrangian can be easily generalized to the manifold. But where does the formerly mentioned difficulty from curved space go? Why we do not face the difficulty we were facing anymore?
 
@@ -180,7 +178,7 @@ This looks really nice and easy in the view of pure math: in the second step, th
 In the rest of this part of the blog, we focus on the first difficulty. The second difficulty is in the second part due to the consideration of length.
 
 ## Solving the Variational Problem on the Manifold
-Unlike in the flat Euclidean space that the solution is always given by Eq. 4,  the variational problem Eq. 6 is hard for a general manifold. However, for some manifolds, we can have a closed form solution using some techniques. Examples are Lie groups and the Stiefel manifold.
+Unlike in the flat Euclidean space that the solution of the variational problem Eq. 6 is always given by Eq. 4, it is hard to solve for a general manifold. However, for some manifolds, we can have a closed form solution using some techniques. Examples are Lie groups and the Stiefel manifold.
 
 
 ### Solving the Variational Problem on Lie Groups Utilizing Left Trivialization
@@ -193,7 +191,7 @@ It is a Lie group (a smooth manifold with group structure). Thanks to the group 
 To strengthen the Lie group structure, we will use $g$ to represent a point on the Lie group. The main property we will use on the Lie group is called *left trivilization*:
 > The tangent space of $g$ is $\{g\xi:\xi\in\mathbb{R}^{n\times n},\,\xi+\xi^\top=0\}$
 
-Don't worry if you are not familiar with those geometry concept of a Lie group. In English, the momentum is $g\xi$ at position $g$ where $\xi$ is skew-symmetric. Consider the 'left-trivilized momentum' $\xi$ directly makes the structure of the manifold simpler, as the following: 
+Don't worry if you are not familiar with those geometry concept of a Lie group. In English, the momentum can be expressed as $g\xi$ at position $g$ where $\xi$ is skew-symmetric. Consider the 'left-trivilized momentum' $\xi$ directly makes the structure of the manifold simpler, as the following: 
 
 $$g^\top g=I, \quad\xi^\top+\xi=0$$
 
@@ -232,14 +230,14 @@ We define the Lagrangian as
 
 $$L:=r(t)\left(\frac{1}{2}\langle \dot{X}, \dot{X}\rangle-f(X)\right)$$
 
-$\langle Q_1, Q_2\rangle:=tr(Q_1^\top Q_2)$ is the inner product.
+$\langle Q_1, Q_2\rangle:=\text{tr}(Q_1^\top Q_2)$ is the inner product.
 
 Instead of using an abstract, intrinsic way of variational principle in the last section about $\mathsf{SO}(n)$, here we will have a different approach: constraint Lagrangian [[Chen, Li & Tao]](https://arxiv.org/pdf/2103.12767.pdf). The reason is that the Stiefel manifold lacks the group structure of $\mathsf{SO}(n)$ and cannot perform the left-trivialization.
 
 
 The variational problem on the manifold can be written as
 
-$$\delta\int_0^T L(X(t), \dot{X}(t), t)\,dt=0,\quad s.t.X^\top X=I, \,\forall 0\le t\le T$$
+$$\delta\int_0^T L(X(t), \dot{X}(t), t)\,dt=0,\quad \text{s.t.}X^\top X=I, \,\forall 0\le t\le T$$
 
 We can see the constraint is nonlinear, and the variational problem can be hard to solve. As a result, we introduce a Lagrange multiplier function $\Lambda$ (an $n\times n$ symmetric matrix that depends on time) and the Lagrangian becomes
 
