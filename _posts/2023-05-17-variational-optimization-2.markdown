@@ -105,7 +105,7 @@ The trainable parameters in multi-headed attention layers are $W_i^Q, W_i^K\in \
 
 From the test result shown below, we can see that simply applying our optimizer to vanilla ViT improves the validation accuracy on CIFAR 10 from 9.05% to 8.32% (trained from scratch).
 
-<img src="ViT.png" width="400">
+<img src="https://raw.githubusercontent.com/itsdynamical/itsdynamical.github.io/blog/images/ViT.png" width="400">
 
 Blue: best within classes. Underscore: best over all classes. Green: unconstrained baseline
 
