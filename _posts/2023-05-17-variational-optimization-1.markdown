@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Variational Optimization, and How It Works for Manifolds (Part I)"
+title:  "Variational Optimization, and How It Works for Manifolds (Part I the continuous side)"
 author:
 - Lingkai Kong
 - Molei Tao
@@ -19,21 +19,25 @@ Two specific (classes) of manifolds will be discussed, namely Lie groups [[Tao &
 Codes for both general optimizers and specific applications can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
 
 ## Gradient Descent with Momentum: A variational approach
-Optimization algorithms are trying to find the minimum of a function, i.e., $\min_{x} f(x)$. The most widely-used type of optimizers in machine learning is called gradient-based optimizers, it assumes the accessibility of the function $f$ and its gradient $\nabla f$. If you are a researcher in machine learning or applied math, you must be heard of the optimization algorithm gradient descent and momentum gradient descent, which are the most famous gradient-based optimizers.
+Consider the optimization problem $\min_{x\in\mathbb{R}^d} f(x)$. 
+<!--- The most widely-used type of optimizers in machine learning is called gradient-based optimizers, it assumes the accessibility of the function $f$ and its gradient $\nabla f$. If you are a researcher in machine learning or applied math, you must be heard of the optimization algorithm gradient descent and momentum gradient descent, which are the most famous gradient-based optimizers.
 
 Although the intuition for (momentum) GD is quite straightforward, a different view of momentum GD via a variational approach is provided here. The reason is this approach is easier to generalize to the manifold using this more fundamental approach.
+--->
 
 ### Gradient Descent
-The commonly used gradient descent has iteration 
+Arguably the most common optimizer in machine learning, gradient descent, uses iteration 
 
-$$x_{k+1}=x_k-h\nabla f(x_k)$$
+$$x_{k+1}=x_k-h\nabla f(x_k) \tag{1}$$
 
-where $h$ is called the learning rate/step size. This iterative algorithm comes from discretizing the gradient flow:
+where $h$ is called the learning rate/step size. It can be understood as a forward Euler discretization of gradient flow ODE in continuous time:
 
-$$\dot{x}=-\nabla f(x)$$
+$$\dot{x}=-\nabla f(x)\tag{2}$$
 
-In order to accelerate the convergence, people introduce 'momentum' into gradient descent.
-### Gradient Descent with Momentum: Newton's View
+One reknown way to accelerate the convergence of gradent descent is to introduce 'momentum'. We will explain why 'momentum' in machine learning really corresponds to momentum in physics (mechanics).
+
+### Gradient Descent with Momentum: how to view it mechanically
+
 The commonly used gradient descent with momentum ([torch.optim.SGD](https://pytorch.org/docs/stable/generated/torch.optim.SGD.html)) has the following iteration:
 
 $$
@@ -54,7 +58,7 @@ the iteration for momentum SGD can be written as
 $$\begin{cases}
 x_{k+1}=x_k+hp_{k+1}\\
 p_{k+1}=(1-\gamma h)p_k-h\nabla f(x_k)
-\tag{1}
+\tag{3}
 \end{cases}
 $$
 
@@ -64,11 +68,31 @@ $$\begin{cases}
  \dot{x}&= p/\text{mass} \\
  \dot{p} &= - \gamma(t) p  -\nabla f(x) 
 \end{cases}
-\tag{2}$$
+\tag{4}$$
 
-This ODE comes from [Newton's second law](https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion), the time rate of change of momentum equals the force ($\nabla f$ in this case) (2nd equation in Eq.2). $p$ is called momentum. $f$ is the potential energy and $\nabla f$ is the conservative force of the potential energy. $\gamma$ here stands for friction. It introduces energy dissipation and lets the dynamical system converge to a saddle point. WLOG, the mass is set to be 1 in all cases.
+This ODE comes from [Newton's second law](https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion), the time rate of change of momentum equals the force ($\nabla f$ in this case) (2nd equation in Eq. 4). $p$ is called momentum. $f$ is the potential energy and $\nabla f$ is the conservative force of the potential energy. $\gamma$ here stands for friction. It introduces energy dissipation and lets the dynamical system converge to a saddle point. WLOG, the mass is set to be 1 in all cases.
 
-More intuitively, this ODE Eq. 5 characterizes a particle $x$ moving under the potential $f$. The force will push the particle 'down the hill' and it will find a local minimum. Following this intuition, we can see that the point will stops at a local minimum and the ODE is indeed optimizing $f$.
+More intuitively, this ODE Eq. 4 characterizes a particle $x$ moving under the potential $f$. The force will push the particle 'down the hill' and it will find a local minimum. Following this intuition, we can see that the point will stops at a local minimum and the ODE is indeed optimizing $f$.
+
+### Quantification of Momentum-Induced Acceleration
+You must have heard that momentum 'accumulates gradient descent'. Here is a super fast but more quantitative summary.
+
+Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_k)-f(x^*)$ for discrete cases and $f(x_t)-f(x^*)$ for continuous cases. 
+
+We assume the $f$ to be convex and $L$-smooth ($L$-smooth means $\|\nabla f(x)-\nabla f(y)\|\le L\|x-y\|$ for all $x,y$). If we choose $\gamma$ as shown, we have the following convergence rate:
+|          |  GD | Momentum GD |
+| -------- | ------- |---------|
+| Continuous case <p> $f(x_t)-f(x^*)$ | Eq. 2 <p>$\mathcal{O}\left(\frac{1}{t}\right)$   | Eq. 4 ($\gamma_t=\frac{3}{t}$)<p>$\mathcal{O}\left(\frac{1}{t^2}\right)$ |
+| Discrete case <p> $f(x_k)-f(x^*)$ | Eq. 1 ($h\le 1/L$)<p> $\mathcal{O}\left(\frac{1}{k}\right)$   | Eq. 3 ($h_k=\sqrt{s\frac{k-1}{k+2}}$ $\gamma_k=\frac{3}{(k+2)h_k}$ for $s\le 1/L$) <p> $\mathcal{O}\left(\frac{1}{k^2}\right)$ |
+
+Comparing the 2 columns of GD and momentum GD, we find that
+
+
+> Momentum improves the speed of convergence of GD.
+
+In fact, the convergence rate that momentum GD gives is optimal when we only have access to the gradient of the function. 
+
+So in summary, one of the many reasons we like momentum GD is it has the optimal convergence rate in gradient-based optimizers, while GD without momentum has a worse convergence rate.
 
 ### Difficulty in Generalizing it directly to the Manifold
 Until now, we have an optimization algorithm in the Euclidean space, let's generalize it to the manifold. But wait, it seems there are some difficulties! For example, what is the gradient?
@@ -93,45 +117,45 @@ d&-c\\
 
 However, if you take a closer look at the function $ad-bc$, you may find it is just the determinant of the matrix and is a constant function $1$ on $\mathsf{SO}(2)$.
 
-An expert may realize other difficulties, a typical one is it is hard to do numerical discretization in the manifold case. So, we need a more fundamental view than Newton's mechanics.
+An expert may realize other difficulties, a typical one is it is hard to do numerical discretization in the manifold case. So, we need a more fundamental view than Newtonian mechanics.
 
 ### Variational Principle: Lagrange Mechanics
-First, let's consider the case without friction ($\gamma=0$) and ODE (2) becomes
+First, let's consider the case without friction ($\gamma=0$) and ODE Eq.4 becomes
 
 $$\begin{cases}
  \dot{x}&= p \\
  \dot{p} &= -\nabla f(x) 
 \end{cases}
-\tag{3}$$
+\tag{5}$$
 
-You may have heard of the big name Lagrange even if you are not an expert in physics. He has an elegant view of the ODE (2). Consider the space of all the smooth parametric curves, i.e., all the map $t\rightarrow \mathbb{R}^d, t\in [0,T]$. This is a large space, but Lagrange defines a function called Lagrangian $L(x,\dot{x}, t)=\frac{1}{2}\|\dot{x}(t)\|^2-f(x(t))$. Consider the functional $\mathcal{S}$ defined as
+You may have heard of the big name Lagrange even if you are not an expert in physics. He has an elegant view of the ODE Eq.4. Consider the space of all the smooth parametric curves, i.e., all the map $t\rightarrow \mathbb{R}^d, t\in [0,T]$. This is a large space, but Lagrange defines a function called Lagrangian $L(x,\dot{x}, t)=\frac{1}{2}\|\dot{x}(t)\|^2-f(x(t))$. Consider the functional $\mathcal{S}$ defined as
 
 $$\mathcal{S}[x]:=\int_0^T L(x, \dot{x}, t)$$
 
 Here $\mathcal{S}$ takes in a parametric curve and outputs a real number. Lagrange tells us that
-> If a curve $x(t), t\in [0,T]$ is a 'critical curve' of the functional $\mathcal{S}$, then it must be a solution of the ODE (Eq. 3).
+> If a curve $x(t), t\in [0,T]$ is a 'critical curve' of the functional $\mathcal{S}$, then it must be a solution of the ODE (Eq. 5).
 
 Mathematically, the parametric curve $x(t), t\in[0,T]$ is the solution of ODE ($\gamma=0$) is equal to say the for any curve $\eta$ with vanish end points, $\lim_{\epsilon\rightarrow 0} \frac{1}{\epsilon}(\mathcal{S}[x+\epsilon \eta]-\mathcal{S}[x])=0$. This is denoted as
 
 $$\delta \int_0^T L(x,\dot{x},t) dt = 0
-\tag{4}
+\tag{6}
 $$
 
 
-Intuitively, this means if we change the curve a little, the Lagrangian is almost unchanged. We can compare it with the local minimum of a function. The local minimum $y^*$ of a function $g$ satisfies $\lim_{\epsilon\rightarrow 0} g(y+\epsilon v)=0\,\forall v$. And the curve satisfies the ODE (2) is the 'best curve' under the cost of $\mathcal{S}$. This is why it is also called '[stationary-action principle](https://en.wikipedia.org/wiki/Stationary-action_principle)'. This is really amazing. It tells us that all the objects in the world are somehow lazy, they are always trying to find the path that cost the least Lagrangian.
+Intuitively, this means if we change the curve a little, the Lagrangian is almost unchanged. We can compare it with the local minimum of a function. The local minimum $y^*$ of a function $g$ satisfies $\lim_{\epsilon\rightarrow 0} g(y+\epsilon v)=0\,\forall v$. And the curve satisfies the ODE Eq.4 is the 'best curve' under the cost of $\mathcal{S}$. This is why it is also called '[stationary-action principle](https://en.wikipedia.org/wiki/Stationary-action_principle)'. This is really amazing. It tells us that all the objects in the world are somehow lazy, they are always trying to find the path that cost the least Lagrangian.
 
-How to solve this variational problem is technical and beyond this blog. But the solution for a variational problem is an ODE given by the [Euler–Lagrange equation](https://en.wikipedia.org/wiki/Euler%E2%80%93Lagrange_equation). Back to our problem, Lagrange proves that the solution of variational problem Eq. 4 is Newton's ODE Eq. 3.
+How to solve this variational problem is technical and beyond this blog. But the solution for a variational problem is an ODE given by the [Euler–Lagrange equation](https://en.wikipedia.org/wiki/Euler%E2%80%93Lagrange_equation). Back to our problem, Lagrange proves that the solution of variational problem Eq. 6 is Newton's ODE Eq. 5.
 
 ### Dissipative Variational Principle: from Lagrange Mechanics to Variational Optimization
 Lagrange mechanics is elegant, however, it has not introduced the friction $\gamma$ yet. Without friction, the total energy, the sum of kinetic energy $\frac{1}{2}\|\dot{x}\|^2$ and potential energy $f(x)$, is a constant. In other word, the kinetic energy and the potential energy will keep exchanging energy with each other and $x$ will never converge.
 
-This means we need friction $\gamma$ to do optimization. But how do we get it from the variational principle? The beautiful idea in [[Wibisono, Wilson & Jordan 16]](https://arxiv.org/pdf/1603.04245.pdf) introduces an extra term $r(t)$, a monotonely increasing positive function, and gives a time-dependent Lagrangian 
+This means we need friction $\gamma$ for  optimization. But how do we get it from the variational principle? The standard $L$ admits a time-translation symmetry, and Noether's theorem thus gives energy conservation. The beautiful idea in [[Wibisono, Wilson & Jordan 16]](https://arxiv.org/pdf/1603.04245.pdf) breaks this symmetry by introducing an algorithmic time dependence, via an extra term $r(t)$, and gives a time-dependent Lagrangian 
 
 $$
 L(x, \dot{x}, t) := r(t)\left(\frac{1}{2}\|\dot{x}(t)\|^2 - f(x(t))\right)
 $$
 
-This $r(t)$ term breaks this symmetricity of energy and gives us energy dissipation. If we also solve the same variational problem Eq. 3, we have the ODE with friction (Eq. 2). $\gamma(t)$ in Eq. 2 is given by $r'(t)/r(t)$ is a positive function stands for the friction parameter. Popular choices of $\gamma$ are constant for strongly convex functions and $\frac{3}{t}$ for convex functions. Thus, we have that the system converges to a local minimum when time goes to infinity. By discretizing this ODE, we have the popular (stochastic) momentum gradient descent algorithm (Eq. 1).
+If $r(t)$ is monotonically increasing, it will give us energy dissipation. If we also solve the same variational problem Eq. 5, we have the ODE with friction (Eq. 4). $\gamma(t)$ in Eq. 4 is given by $r'(t)/r(t)$ is a positive function stands for the friction parameter. Popular choices of $\gamma$ are constant for strongly convex functions and $\frac{3}{t}$ for convex functions. Thus, we have that the system converges to a local minimum when time goes to infinity. By discretizing this ODE, we have the popular (stochastic) momentum gradient descent algorithm (Eq. 3).
 
 
 
@@ -154,7 +178,7 @@ This looks really nice and easy in the view of pure math: in the second step, th
 In the rest of this part of the blog, we focus on the first difficulty. The second difficulty is in the second part due to the consideration of length.
 
 ## Solving the Variational Problem on the Manifold
-Unlike in the flat Euclidean space that the solution is always given by Eq. 2,  the variational problem Eq. 4 is hard for a general manifold. However, for some manifolds, we can have a closed form solution using some techniques. Examples are Lie groups and the Stiefel manifold.
+Unlike in the flat Euclidean space that the solution is always given by Eq. 4,  the variational problem Eq. 6 is hard for a general manifold. However, for some manifolds, we can have a closed form solution using some techniques. Examples are Lie groups and the Stiefel manifold.
 
 
 ### Solving the Variational Problem on Lie Groups Utilizing Left Trivialization
@@ -185,7 +209,7 @@ $$\begin{cases}
 \dot{g}=g\xi\\
 \dot{\xi}=-\gamma (t)\xi-\left(\frac{\partial f}{\partial g}^\top g-g^\top \frac{\partial f}{\partial g}\right)
 \end{cases}
-\tag{5}
+\tag{7}
 $$
 
 In this equation, $\frac{\partial f}{\partial g}$ is the element-wise Euclidean derivative, which is an $n\times n$ matrix. $g\xi$ is again the matrix product. Again, since the variational problem is solved on the manifold, the trajectory stays on the manifold automatically though everything is Euclidean.
@@ -232,18 +256,18 @@ $$
 $\frac{\partial f}{\partial X}$ is again the element-wise derivative (an $n\times m$ matrix).
 Again, though everything is a matrix in Euclidean space with no constraints, due to the technique of the Lagrange multiplier, the manifold structure is also preserved automatically.
 
-We can see from the definition that $\mathsf{SO}(n)$ is a special case of $\mathsf{St}(n,n)$, and naturally, though the ODE optimizing on the Stiefel manifold seems complicated, it also contains the $\mathsf{SO}(n)$ case Eq. 5 as a special case. To see that, we decompose the tangent space $T_X\mathsf{St}$ into $X$ and $X^\perp$ components by $Q=XY+V$ and use $Y,V$ to replace $Q$.
+We can see from the definition that $\mathsf{SO}(n)$ is a special case of $\mathsf{St}(n,n)$, and naturally, though the ODE optimizing on the Stiefel manifold seems complicated, it also contains the $\mathsf{SO}(n)$ case Eq. 7 as a special case. To see that, we decompose the tangent space $T_X\mathsf{St}$ into $X$ and $X^\perp$ components by $Q=XY+V$ and use $Y,V$ to replace $Q$.
 This transformation changes the constraint $X^\top Q+Q^\top X=0$ to $\{ Y^\top+Y=0,\, X^\top V=0 \}$ 
 and the ODE becomes
 
 $$
 \begin{align}
-    &\dot{X}=XY+V\tag{6a}\\
-    &\dot{Y}=-\gamma Y-\frac{1-b}{2}\Big(X^\top \frac{\partial f}{\partial X}-\frac{\partial f}{\partial X}^\top X\Big)\tag{6b}\\
-    &\dot{V}=-\gamma V+\frac{3a-2}{2}VY-XV^\top V-\left(I-XX^\top\right)\frac{\partial f}{\partial X}\tag{6c}
+    &\dot{X}=XY+V\tag{8a}\\
+    &\dot{Y}=-\gamma Y-\frac{1-b}{2}\Big(X^\top \frac{\partial f}{\partial X}-\frac{\partial f}{\partial X}^\top X\Big)\tag{8b}\\
+    &\dot{V}=-\gamma V+\frac{3a-2}{2}VY-XV^\top V-\left(I-XX^\top\right)\frac{\partial f}{\partial X}\tag{8c}
 \end{align}
 $$
 
-where $Y\in\mathbb{R}^{m\times m}, V\in\mathbb{R}^{n\times m}$. We can see (Eq. 6a) and (Eq. 6b) are just the ODE (Eq. 5) for optimizing on $\mathsf{SO}(n)$.
+where $Y\in\mathbb{R}^{m\times m}, V\in\mathbb{R}^{n\times m}$. We can see (Eq. 8a) and (Eq. 8b) are just the ODE (Eq. 7) for optimizing on $\mathsf{SO}(n)$.
 
 Until now, we have seen the Lagrange's beautiful view about mechanics and how to generalize this view to some curved manifolds to have an ODE optimizing a function. However, to have an algorithm, we need to have a numerical integrator the ODE. However, this is nontrivial. The manifold is curved and the commonly used Euclidean numerical integrator will not work. It needs to be specially designed. Please see the [part II](variational-optimization-2.html) of this blog.
