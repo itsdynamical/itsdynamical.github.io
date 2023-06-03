@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Variational Optimization, and How It Simplifies Manifold Optimization (Part I: the continuous side of the story)"
+title:  "Variational Optimization, and How It Simplifies Manifold Optimization \n (Part I: the continuous side of the story)"
 author:
 - Lingkai Kong
 - Molei Tao
@@ -19,7 +19,9 @@ Two specific (classes) of manifolds will be discussed, namely Lie groups [[Tao &
 Codes for both general optimizers and specific applications can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
 
 ## Gradient Descent with Momentum: A Variational Perspective
-Let first consider a smooth optimization problem in Euclidean (i.e. flat) space, $\min_{x\in\mathbb{R}^d} f(x)$. 
+Let first consider a smooth optimization problem in Euclidean (i.e. flat) space, 
+
+$$\min_{x\in\mathbb{R}^d} f(x).$$ 
 
 ### Gradient Descent
 Arguably the most common optimizer in machine learning, gradient descent, uses iteration 
@@ -32,9 +34,9 @@ $$\dot{x}=-\nabla f(x)\tag{2}$$
 
 One reknown way to accelerate the convergence of gradent descent is to introduce 'momentum'. We will explain why 'momentum' in machine learning really corresponds to momentum in physics (mechanics).
 
-### Gradient Descent with Momentum: How to View It 
+### Gradient Descent with Momentum: How to View It as a Discretization
 
-Nesterov’s Accelerated Gradient (NAG-C, 'C' stands for convex) is a popular momentum GD optimizer. For convex $f$, the algorithm is
+Consider for instance Nesterov’s Accelerated Gradient for convex functions (NAG-C, 'C' means it has acceleration for convex $f$), which is a popular momentum GD optimizer. The algorithm is
 
 $$\begin{cases}
 x_k&=y_{k-1}-s\nabla f(y_{k-1})\\
@@ -42,48 +44,32 @@ y_k &= x_k+\frac{k-1}{k+2}(x_k-x_{k-1})
 \end{cases}
 \tag{3}$$
 
-starting from $x_0$ with initial condition $y_0=x_0$. [Su. et al, 2014] analysis its convergence by viewing it as a discretization as the following ODE with $\gamma=\frac{3}{t}$ and $\text{mass}=1$.
-
-$$\begin{cases}
- \dot{x}&= p/\text{mass} \\
- \dot{p} &= - \gamma p  -\nabla f(x) 
-\end{cases}
-\tag{4}$$
-
-This ODE is exactly [Newton's second law](https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion), which says the rate of change of momentum (in time) is given by the net force, which sums a frictional force $-\gamma p$ and a conservative force $-\nabla f$. $\gamma$ here thus serves as the friction coefficient, and it introduces energy dissipation, which leads $x(t)$ to converge to a local min of $f$ as $t\rightarrow\infty$.
-<!--
-More intuitively, this ODE Eq. 4 characterizes a particle $x$ moving under the potential $f$ with friction. The conservative force $f$ will push the particle 'down the hill' and the friction leads to energy dissipation and let the partical converges to a local minimum. Following this intuition, we can see that the point will stops at a local minimum and the ODE is indeed optimizing $f$.
-
-
-The commonly used gradient descent with momentum ([torch.optim.SGD](https://pytorch.org/docs/stable/generated/torch.optim.SGD.html)) has the following iteration:
+starting from $x_0$ with initial condition $y_0=x_0$. [Su, Boyd and Candes, 2014] provided an insightful perspective of viewing it as a discretization of an ODE. To see that, one can introduce coordinate transformation $p_k=\frac{x_k-x_{k-1}}{\sqrt{s}}$ and step size $h=\sqrt{s}$ and rewrite it in the following form
 
 $$
 \begin{cases}
-\theta_k=\theta_{k-1}-\text{lr}\, b_k \\ 
-b_k=\mu b_{k-1}+\nabla g(\theta_{k-1})
+    x_{k+1}=x_k+hp_{k+1}\\
+    p_{k+1}=p_k-\frac{3}{k+2}p_k-h\nabla f(y_k)
 \end{cases}
 $$
 
-$\text{lr}$ is the learning rate. $\mu$ is a user-defined hyperparameter in $[0,1)$. $\theta$ is the parameter we are trying to optimize and $b$ is the 'momentum' (note that this momentum is different from the mechanical momentum, which will appear shortly, by a constant factor). We can see if we let $\mu=0$, it decays to GD without momentum.
-
-After performing a rescaling of variable by
-$\theta=\frac{\sqrt{\text{lr}}}{h}x$, $b_t=-\frac{1}{\sqrt{\text{lr}}}p_k$, $g(\theta_t)=f(x_k)$, $\mu=1-\gamma h$,
-the iteration for momentum SGD can be written as
+where the first equation is from the definition of $p_k$ and the second equation is by substituting $x_k$ in the first equation in Eq. (3) to the second equation in Eq. (3). Note that $\|f(y_k)-f(x_k)\|=o(h)$. And this discrete system is the discretization of the following ODE
 
 $$\begin{cases}
-x_k=x_{k-1}+hp_k\\
-p_k=(1-\gamma h)p_{k-1}-h\nabla f(x_{k-1})
-\tag{3}
+ \dot{x}&= p \\
+ \dot{p} &= - \gamma(t) p  -\nabla f(x) 
 \end{cases}
-$$
+\tag{4}$$
 
-we can see it is a discretization of Eq. (4) with step size $h$.
+Note that $t\approx hk=\sqrt{s}k$. This gives the corresponding $\gamma=\frac{3}{t}$.
 
--->
+
+
+This ODE is exactly [Newton's second law](https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion), which says the rate of change of momentum (in time) is given by the net force, which sums a frictional force $-\gamma p$ and a conservative force $-\nabla f$. $\gamma$ here thus serves as the friction coefficient, and it introduces energy dissipation, which leads $x(t)$ to converge to a local min of $f$ as $t\rightarrow\infty$.
 
 
 ### Quantification of Momentum-Induced Acceleration
-It is a common saying that momentum 'accelerates gradient descent'. Let's quickly see what this could mean quantitatively:
+It is a common saying that momentum 'accelerates gradient descent'. Let's take a quick look at what this means quantitatively:
 
 Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_k)-f(x^*)$ for discrete cases and $f(x_t)-f(x^*)$ for continuous cases. 
 
@@ -91,15 +77,15 @@ Assuming the $f$ to be convex and $L$-smooth ($L$-smooth means $\|\nabla f(x)-\n
 
 |          |  without momentum | with momentum|
 | -------- | ------- |---------|
-| continuous case <p> $f(x_t)-f(x^*)=$ | Eq. 2 <p>$\mathcal{O}\left(\frac{1}{t}\right)$   | Eq. 4 ($\gamma_t=\frac{3}{t}$)<p>$\mathcal{O}\left(\frac{1}{t^2}\right)$ |
+| continuous case <p> $f(x_t)-f(x^*)=$ | Eq. 2 <p>$\mathcal{O}\left(\frac{1}{t}\right)$   | Eq. 4 ($\gamma(t)=\frac{3}{t}$)<p>$\mathcal{O}\left(\frac{1}{t^2}\right)$ |
 | discrete case <p> $f(x_k)-f(x^*)=$ | Eq. 1 ($h\le 1/L$)<p> $\mathcal{O}\left(\frac{1}{k}\right)$   | Eq. 3 ($s\le 1/L$) <p> $\mathcal{O}\left(\frac{1}{k^2}\right)$ |
 
 This means momentum improves the nonasymptotic error bound from linear to quadratic.
 
-In fact, the quadratic convergence speed that momentum GD gives is optimal when, roughly speaking, we only have access to the gradient of the function.
+In fact, the quadratic convergence speed that momentum GD gives is optimal when, roughly speaking, we only have access to the gradient of the function [Nesterov, 1983].
 
-There are also many other algorithms can be viewed as discretization of this ODE (Eq. 4), e.g., when we choose $\gamma$ to be constant, it is the ODE corresponding to NAG-SC ('SC' stands for strongly convex) and heavy ball [Polyak, 1964].
-    
+Many other celebrated GD with momentum algorithms can be viewed as discretizations of this ODE (Eq. 4). For example, when we choose $\gamma$ to be constant, one discretization gives NAG-SC ('SC' stands for strongly convex) and another gives heavy ball [Polyak, 1964].
+
 So, in summary, one of the many reasons we like momentum GD is it has the optimal convergence rate among gradient-based optimizers, while GD without momentum can have a slower convergence speed.
 
 
@@ -301,9 +287,10 @@ Up to this point, we have exploited variational optimization, and obtained expli
 
 Doing this will be fun, because the ODEs are constructed such that their solutions stay on the curved manifolds. A naive discretization will lead to numerical solutions that go off the manifold. We need better design. Please see the [Part II](variational-optimization-2.html) of this blog.
 
-
 ---
+
 ## :memo: How to Cite Me?
+
 Please cite the following 2 publications
 ```
 @inproceedings{tao2020variational,
