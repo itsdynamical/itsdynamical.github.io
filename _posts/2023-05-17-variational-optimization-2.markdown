@@ -21,8 +21,7 @@ comments_id: 1
 Fig.1 - What will happen if we artifacially pull the point back?
 </p>
 
-In this Part II of the blog, we will construct such optimizers. Then we will showcase some interesting applications, such as [generically improving the performance of Transformer models](#orthogonality-boosts-the-performance-of-transformer-models), and [approximating Wasserstein distances in high dimensions](#projection-robust-wasserstein-prw-distance).  Codes of the generic optimizers as well as the applications can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
-
+In this Part II of the blog, we will construct such optimizers. Then we will showcase some interesting applications, such as [generically improving the performance of Transformer models](#Sec_Transformer), and [approximating Wasserstein distances in high dimensions](#Sec_PRW).  Codes of the generic optimizers as well as the applications can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
 ## Reminder of the Optimization ODE, and Further Preparation
 As a continuation from [Part I](variational-optimization-1.html), we will focus on optimization on Stiefel manifold. The specific case of $\mathsf{SO}(n)$ Lie group will be a special case of the Stiefel manifold $\mathsf{St}(n,m)$ when $n=m$. The optimization dynamics, obtained from variational optimization, is
 
@@ -127,7 +126,7 @@ $$
 
 is an $n\times m$ matrix with $I_m$ is the $m\times m$ identity matrix and $0$ is the $(n-m)\times m$ zero matrix. $RE$ is the first $m$ columns of the $\mathsf{SO}(n)$ matrix, which is the $\mathsf{St}(n,m)$ matrix $U$ above.
 
-
+<a id="Sec_PRW"> </a>
 #### Projection Robust Wasserstein (PRW) Distance
 The great idea of [Projection Robust Wasserstein Distance](https://arxiv.org/pdf/2006.07458.pdf)[Paty & Cuturi, 2019][Lin et al. 2020] can be viewed as a special case of subspace pursuing. Given 2 probability measures $\mu,\nu$ on $\mathbb{R}^n$, we denote the set of all couplings as $\Pi(\mu,\nu)$. We first define the Wasserstein distance between $\mu$ and $\nu$ as
 
@@ -139,6 +138,7 @@ $$P_m(\mu,\nu) := \max_{U\in \mathsf{St}(n,m)} \min_{\pi \in \Pi(\mu,\nu)} \left
 
 Same as mentioned before, the maximization is in the sense of keeping as much information as possible. This approach not only makes the problem computationally more manageable when $m\ll n$. What's more, since the dimensions that are relatively less important are omitted after projection, the noise is also reduced and only the essential component is left, which increases the robustness compared to the vanilla $W_2$ distance.
 
+<a id="Sec_Transformer"> </a>
 ### Orthogonality Boosts the Performance of Transformer Models
 Transformer [[Vaswani et al.]](https://arxiv.org/pdf/1706.03762.pdf) is a recent but extremely powerful deep learning architecture. It was first invented for NLP, but Vision Transformer (ViT) [[Dosovitskiy et al]](https://arxiv.org/pdf/2010.11929.pdf) also applies is to computer vision. The key to why the Transformer is powerful is that the attention layer is able to characterize long-distance interactions between elements in the sequence. The 'elements' mean 'words' in NLP tasks and 'patches' in CV tasks. We follow the traditional notations in [Vaswani et al.]. 
 
