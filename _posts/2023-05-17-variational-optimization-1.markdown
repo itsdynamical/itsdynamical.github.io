@@ -296,7 +296,7 @@ Doing this will be fun, because the ODEs are constructed such that their solutio
 
 ---
 
-## :memo: How to Cite Me?
+## 📝 How to Cite Me?
 
 Please cite the following 2 publications
 ```
