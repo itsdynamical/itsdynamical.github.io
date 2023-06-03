@@ -50,9 +50,9 @@ and as long as the initial condition satisfies $X(0)^T X(0)=I, Y(0)^T+Y(0)=0$ an
 When $n=m$, $V=0$, and we degenerate to the Lie group case (Eq.8a and 8b become just Eq.7 in [Part I](variational-optimization-1.html)).
 
 
-<span style="color:blue">
+<!--
 Tao: to be conti.
-</span>.
+-->
 
 ## Nontrivial Discretization for Computationally Efficient Structure Preservation
 Structure preserving means the manifold structure is preserved, i.e., keep the point always stays on the manifold. In the continuous case, the manifold structure is preserved since the variational problem is done among all the curves on the manifold.
@@ -128,7 +128,7 @@ is an $n\times m$ matrix with $I_m$ is the $m\times m$ identity matrix and $0$ i
 
 <a id="Sec_PRW"> </a>
 #### Projection Robust Wasserstein (PRW) Distance
-The great idea of [Projection Robust Wasserstein Distance](https://arxiv.org/pdf/2006.07458.pdf)[Paty & Cuturi, 2019][Lin et al. 2020] can be viewed as a special case of subspace pursuing. Given 2 probability measures $\mu,\nu$ on $\mathbb{R}^n$, we denote the set of all couplings as $\Pi(\mu,\nu)$. We first define the Wasserstein distance between $\mu$ and $\nu$ as
+The great idea of Projection Robust Wasserstein Distance ([[Paty & Cuturi, 2019]](https://arxiv.org/pdf/1901.08949.pdf), [[Lin et al. 2020]](https://arxiv.org/pdf/2006.07458.pdf)) can be viewed as a special case of subspace pursuing. Given 2 probability measures $\mu,\nu$ on $\mathbb{R}^n$, we denote the set of all couplings as $\Pi(\mu,\nu)$. We first define the Wasserstein distance between $\mu$ and $\nu$ as
 
 $$W_2(\mu,\nu) := \min_{\pi \in \Pi(\mu,\nu)} \left( \int \|x-y\|^2 \,d\pi(x,y) \right)^{1/2}$$
 
@@ -194,6 +194,9 @@ If you'd also like to cite this blog, please add a 3rd citation as follows
 1. François-Pierre Paty, and Marco Cuturi. "Subspace robust Wasserstein distances." International Conference on Machine Learning (2019).
 
 1. Tianyi Lin, Chenyou Fan, Nhat Ho, Marco Cuturi, and Michael Jordan. "Projection robust Wasserstein distance and Riemannian optimization." Advances in Neural Information Processing Systems (2020).
+
+1. François-Pierre Paty, and Marco Cuturi. "Subspace robust Wasserstein distances." International conference on machine learning. PMLR, 2019.
+
 
 1. Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, and Illia Polosukhin. "Attention is all you need." Advances in Neural Information Processing Systems (2017).
 
