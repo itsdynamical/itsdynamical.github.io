@@ -1,17 +1,59 @@
 ---
 layout: post
-title:  "Variational Optimization, and How It Works for Manifolds (Part II the discrete side of the story)"
+title:  "Variational Optimization, and How It Simplifies Manifold Optimization (Part II: the discrete side of the story)"
 author: 
 - Lingkai Kong
 - Molei Tao
 # author_homepage: https://mtao8.math.gatech.edu
-# author: Lingkai Kong
-date:   2023-05-17
+# author: Lingkai Kong and Molei Tao
+date:   2023-06-01
 categories: article
 comments_id: 1
 ---
 
-In the [part I](variational-optimization-1.html) of the blog, the continuous picture is finished with no artificial step involved. In this blog, we focus on solving the second difficulty: structure preserving discretization. And after solving both of the 2 difficulties, we have a variational optimizer and we will see some interesting applications: [improve the performance of Transformer model](#orthogonality-boosts-the-performance-of-transformer-models) and [estimate the Wasserstein distance in high dimensional cases](#projection-robust-wasserstein-prw-distance).  Code can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
+
+[Part I](variational-optimization-1.html) of the blog described how to obtain ODEs that are written in Euclidean space but optimize functions on manifolds. To turn them into actual optimization algorithms in discrete time, we need to discretize the time of the ODEs. This is not trivial, because a naive discretization would disrespect the fact that the exact solution remains on the manifold (see fig.1 left). Of course, one can always add an extra step that artificially pulls things back to the manifold, but this operation can be computational costly, and it partially cancels efforts and thus possibly slows down the convergence of the optimization too (see fig.1 right). We'd like to be computationally efficient (to experts: e.g., as little usage of exponential maps or projections as possible, computation complexity more dependence on $m$ but less on $n$ (we could have $n\gg m$), etc.) and avoid such cancellations as much as possible.
+<p align="middle">
+  <img src="https://github.com/itsdynamical/itsdynamical.github.io/blob/blog/images/Untitled-1.png?raw=true" width="200" />
+  <img src="https://github.com/itsdynamical/itsdynamical.github.io/blob/blog/images/Untitled-2.png?raw=true" width="200" /> 
+</p>
+<p align = "center">
+Fig.1 - What will happen if we artifacially pull the point back?
+</p>
+
+In this Part II of the blog, we will construct such optimizers. Then we will showcase some interesting applications, such as [generically improving the performance of Transformer models](#orthogonality-boosts-the-performance-of-transformer-models), and [approximating Wasserstein distances in high dimensions](#projection-robust-wasserstein-prw-distance).  Codes of the generic optimizers as well as the applications can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
+
+## Reminder of the Optimization ODE, and Further Preparation
+As a continuation from [Part I](variational-optimization-1.html), we will focus on optimization on Stiefel manifold. The specific case of $\mathsf{SO}(n)$ Lie group will be a special case of the Stiefel manifold $\mathsf{St}(n,m)$ when $n=m$. The optimization dynamics, obtained from variational optimization, is
+$$
+\begin{cases}
+    \dot{X}=&Q\\
+    \dot{Q}=&-\gamma Q-XQ^\top Q
+    -\frac{\partial f}{\partial X}+\frac{1}{2}XX^\top\frac{\partial f}{\partial X}+\frac{1}{2}X\frac{\partial f}{\partial X}^\top X
+\end{cases}
+$$
+
+where position $X\in \mathsf{St}(n,m)$ and momentum/velocity $Q\in T_X \mathsf{St}(n,m)$ . Rich geometric information is contained there. In the Lie group case, we used left-trivialization to represent the velocity variable $\dot{g}$ using $\xi$ that lives in the Lie algebra, via $\dot{g}=g\xi$. Now our position is $X$ (as opposed to $g$) and velocity is $Q$ (as opposed to $\dot{g}$), but we don't have a group structure, and if we pretend $Q=XY$ and use $Y$ as a new representation of velocity, we will have big trouble --- $Q$ is $n\times m$ and $Y$ then has to be $m\times m$, but $n > m$ and we would have lost information about the velocity! Instead, we decompose the tangent space $T_X\mathsf{St}$ into $X$ and $X^\perp$ components by $Q=XY+V$, where $XY$ is in the span of $X$, and $V$ is an "orthogonal" remainder. Given $X^\top X=I$ and $X^\top Q+Q^\top X=0$, one can show that this transformation turns these the velocity constraint $X^\top Q+Q^\top X=0$ into $Y^T+Y=0$ and $X^\top V=0$ instead, the latter giving the precise meaning of "orthogonal".
+
+The above is the static geometric picture, but there is more. Remember $X, Q$ are actually functions of time $X(t), Q(t)$. If one does this decomposition for each $t$, what dynamics will the resulting $Y(t), V(t)$ have? It turns out that they are given by some elegant ODEs
+
+$$
+\begin{align}
+    &\dot{X}=XY+V\tag{8a}\\
+    &\dot{Y}=-\gamma Y-\frac{1-b}{2}\Big(X^\top \frac{\partial f}{\partial X}-\frac{\partial f}{\partial X}^\top X\Big)\tag{8b}\\
+    &\dot{V}=-\gamma V+\frac{3a-2}{2}VY-XV^\top V-\left(I-XX^\top\right)\frac{\partial f}{\partial X}\tag{8c}
+\end{align}
+$$
+
+and as long as the initial condition satisfies $X(0)^T X(0)=I, Y(0)^T+Y(0)=0$ and $X(0)^\top V(0)=0$, the solution automatically maintains the new structural constraints $X(t)^T X(t)=I, Y(t)^T+Y(t)=0$ and $X(t)^\top V(t)=0$, for all $t>0$, and of course, $Q(t):=X(t)Y(t)+V(t)$ will exactly satisfy its constraint and remain in $T_{X(t)} \mathsf{St}$ too.
+
+When $n=m$, $V=0$, and we degenerate to the Lie group case (Eq.8a and 8b become just Eq.7 in [Part I](variational-optimization-1.html)).
+
+
+<span style="color:blue">
+Tao: to be conti.
+</span>.
+
 ## Nontrivial Discretization for Computationally Efficient Structure Preservation
 Structure preserving means the manifold structure is preserved, i.e., keep the point always stays on the manifold. In the continuous case, the manifold structure is preserved since the variational problem is done among all the curves on the manifold.
 
@@ -109,23 +151,55 @@ From the test result shown below, we can see that simply applying our optimizer 
 
 Blue: best within classes. Underscore: best over all classes. Green: unconstrained baseline
 
-## Thank you for reading
+---
+## 📝 How to Cite Me?
+Please cite the following 2 publications
+```
+@inproceedings{tao2020variational,
+  title={Variational optimization on {L}ie groups, with examples of leading (generalized) eigenvalue problems},
+  author={Molei Tao and Tomoki Ohsawa},
+  booktitle={International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  year={2020}
+}
+
+@inproceedings{kong2023momentum,
+  title={Momentum {S}tiefel Optimizer, with Applications to Suitably-Orthogonal Attention, and Optimal Transport},
+  author={Lingkai Kong and Yuqing Wang and Molei Tao},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2023}
+}
+```
+If you'd also like to cite this blog, please add a 3rd citation as follows
+```
+@misc{tao2023blog1,
+  title = {Variational Optimization, and How It Works for Manifolds},
+  author={Lingkai Kong and Molei Tao},
+  howpublished = {\url{https://itsdynamical.github.io/article/2023/06/01/variational-optimization-1.html}},
+  note = {From blog <It's dynamical>}
+}
+```
+
+## Thank you for reading!
 
 
 ## References
-1. Molei Tao, and Tomoki Ohsawa. "Variational optimization on lie groups, with examples of leading (generalized) eigenvalue problems." In International Conference on Artificial Intelligence and Statistics, pp. 4269-4280. PMLR, 2020.
+1. Molei Tao, and Tomoki Ohsawa. "Variational optimization on lie groups, with examples of leading (generalized) eigenvalue problems." International Conference on Artificial Intelligence and Statistics (2020).
 
 
 1. Lingkai Kong, Yuqing Wang, and Molei Tao. "Momentum Stiefel Optimizer, with Applications to Suitably-Orthogonal Attention, and Optimal Transport." International Conference on Learning Representations (2023).
 
-1. Renyi Chen, Gongjie Li, and Molei Tao. "Grit: A package for structure-preserving simulations of gravitationally interacting rigid bodies." The Astrophysical Journal 919, no. 1 (2021): 50.
+1. Renyi Chen, Gongjie Li, and Molei Tao. "GRIT: A package for structure-preserving simulations of gravitationally interacting rigid bodies." The Astrophysical Journal (2021).
 
-1. François-Pierre Paty, and Marco Cuturi. "Subspace robust Wasserstein distances." In International conference on machine learning, pp. 5072-5081. PMLR, 2019.
+1. François-Pierre Paty, and Marco Cuturi. "Subspace robust Wasserstein distances." International Conference on Machine Learning (2019).
 
-1. Tianyi Lin, Chenyou Fan, Nhat Ho, Marco Cuturi, and Michael Jordan. "Projection robust Wasserstein distance and Riemannian optimization." Advances in neural information processing systems 33 (2020): 9383-9397.
+1. Tianyi Lin, Chenyou Fan, Nhat Ho, Marco Cuturi, and Michael Jordan. "Projection robust Wasserstein distance and Riemannian optimization." Advances in Neural Information Processing Systems (2020).
 
-1. Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, and Illia Polosukhin. "Attention is all you need." Advances in neural information processing systems 30 (2017).
+1. Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, and Illia Polosukhin. "Attention is all you need." Advances in Neural Information Processing Systems (2017).
 
-1. Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani et al. "An image is worth 16x16 words: Transformers for image recognition at scale." International Conference on Learning Representations (2021).
+1. Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, Jakob Uszkoreit, Neil Houlsby. "An image is worth 16x16 words: Transformers for image recognition at scale." International Conference on Learning Representations (2021).
 
-1. Andre Wibisono, Ashia C. Wilson, and Michael I. Jordan. "A variational perspective on accelerated methods in optimization." Proceedings of the National Academy of Sciences 113, no. 47 (2016): E7351-E7358.
+1. Andre Wibisono, Ashia C. Wilson, and Michael I. Jordan. "A variational perspective on accelerated methods in optimization." Proceedings of the National Academy of Sciences (2016).
+
+1. Weijie Su, Stephen Boyd, and Emmanuel Candes. "A differential equation for modeling Nesterov’s accelerated gradient method: theory and insights." Advances in neural information processing systems 27 (2014).
+
+1.  Boris T. Polyak. "Some methods of speeding up the convergence of iteration methods." Ussr computational mathematics and mathematical physics 4.5 (1964): 1-17.
