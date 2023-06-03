@@ -14,7 +14,8 @@ comments_id: 1
 ## TL; DR
 Gradient Descent (GD) is one of the most popular optimization algorithms for machine learning, and momentum is often used to accelerate its convergence. In this blog, we will start with a variational formulation of momentum GD, explore its rich connection to mechanics, and demonstrate how it allows natural generalizations of momentum GD to optimizing functions defined on manifolds.
 
-Two specific (classes) of manifolds will be discussed, namely Lie groups [[Tao & Ohsawa, 2020]](https://arxiv.org/pdf/2001.10006.pdf) and the Stiefel manifold [[Kong, Wang & Tao, 2023]](https://arxiv.org/pdf/2205.14173.pdf). Such optimizations are beyond being mathematically interesting, and there are numerous applications  helpful for machine learning practice. For example, it can be used to [improve the performance of Transformer model](#orthogonality-boosts-the-performance-of-transformer-models) and [approximate Wasserstein distances in high dimension](#projection-robust-wasserstein-prw-distance).
+Two specific (classes) of manifolds will be discussed, namely Lie groups [[Tao & Ohsawa, 2020]](https://arxiv.org/pdf/2001.10006.pdf) and the Stiefel manifold [[Kong, Wang & Tao, 2023]](https://arxiv.org/pdf/2205.14173.pdf). Such optimizations are beyond being mathematically interesting, and there are numerous applications  helpful for machine learning practice. For example, it can be used to [improve the performance of Transformer model](variational-optimization-2.html#Sec_Transformer) and [approximate Wasserstein distances in high dimension](variational-optimization-2.html#Sec_PRW).
+
 
 Codes for both general optimizers and specific applications can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
 
