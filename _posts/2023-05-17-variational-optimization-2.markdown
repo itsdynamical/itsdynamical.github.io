@@ -25,6 +25,7 @@ In this Part II of the blog, we will construct such optimizers. Then we will sho
 
 ## Reminder of the Optimization ODE, and Further Preparation
 As a continuation from [Part I](variational-optimization-1.html), we will focus on optimization on Stiefel manifold. The specific case of $\mathsf{SO}(n)$ Lie group will be a special case of the Stiefel manifold $\mathsf{St}(n,m)$ when $n=m$. The optimization dynamics, obtained from variational optimization, is
+
 $$
 \begin{cases}
     \dot{X}=&Q\\
