@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Variational Optimization, and How It Simplifies Manifold Optimization \n (Part I: the continuous side of the story)"
+title:  "Variational Optimization, and How It Simplifies Manifold Optimization &#13;&#10; (Part I: the continuous side of the story)"
 author:
 - Lingkai Kong
 - Molei Tao
@@ -71,14 +71,14 @@ This ODE is exactly [Newton's second law](https://en.wikipedia.org/wiki/Newton%2
 ### Quantification of Momentum-Induced Acceleration
 It is a common saying that momentum 'accelerates gradient descent'. Let's take a quick look at what this means quantitatively:
 
-Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_k)-f(x^*)$ for discrete cases and $f(x_t)-f(x^*)$ for continuous cases. 
+Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_k)-f(x^\star)$ for discrete cases and $f(x_t)-f(x^*)$ for continuous cases. 
 
 Assuming the $f$ to be convex and $L$-smooth ($L$-smooth means $\|\nabla f(x)-\nabla f(y)\|\le L\|x-y\|$ for all $x,y$), we have the following convergence rates:
 
 |          |  without momentum | with momentum|
 | -------- | ------- |---------|
-| continuous case <p> $f(x_t)-f(x^*)=$ | Eq. 2 <p>$\mathcal{O}\left(\frac{1}{t}\right)$   | Eq. 4 ($\gamma(t)=\frac{3}{t}$)<p>$\mathcal{O}\left(\frac{1}{t^2}\right)$ |
-| discrete case <p> $f(x_k)-f(x^*)=$ | Eq. 1 ($h\le 1/L$)<p> $\mathcal{O}\left(\frac{1}{k}\right)$   | Eq. 3 ($s\le 1/L$) <p> $\mathcal{O}\left(\frac{1}{k^2}\right)$ |
+| continuous case <br> $f(x_t)-f(x^*)=$ | Eq. 2 <br>$\mathcal{O}\left(\frac{1}{t}\right)$   | Eq. 4 ($\gamma(t)=\frac{3}{t}$)<br>$\mathcal{O}\left(\frac{1}{t^2}\right)$ |
+| discrete case <br> $f(x_k)-f(x^*)=$ | Eq. 1 ($h\le 1/L$)<br> $\mathcal{O}\left(\frac{1}{k}\right)$   | Eq. 3 ($s\le 1/L$) <br>$\mathcal{O}\left(\frac{1}{k^2}\right)$ |
 
 This means momentum improves the nonasymptotic error bound from linear to quadratic.
 
@@ -126,7 +126,9 @@ $$\begin{cases}
 This is Newtonian mechanics. $x$ is a function of time $t$, which gives a trajectory in position space. Based on thinking mechanics in terms of trajectories, Italian-French mathematician and astronomer Joseph-Louis Lagrange proposed a deeper view of mechanics in 1788, as follows.
 
 Let's consider all possible trajectories, i.e. mappings each represented by $x: [0,T] \rightarrow \mathbb{R}^d$, and associate with each with something called a Lagrangian, which takes a vector-valued function of time and returns a scalar-valued function of time (for advanced readers, it is a dual of energy). If we choose the Lagrangian to be
+
 $$L(x,\dot{x}, t)=\frac{1}{2}\|\dot{x}(t)\|^2-f(x(t)),$$
+
 and consider an "action" functional $\mathcal{S}$ defined as
 
 $$\mathcal{S}[x]:=\int_0^T L(x, \dot{x}, t)$$
@@ -216,7 +218,7 @@ Remarkably, they are independent of each other, making the variational problem (
 
 $$L:=r(t)\left(\frac{1}{2}\langle \xi, \xi\rangle-f(g)\right),$$
 
-where $\langle \xi_1, \xi_2\rangle:=\text{tr}(\xi_1^\top M \xi_2)$ is an inner product defined using standard matrix operations and $M$ is any constant positive definite matrix. We will use $M=I$ from now on for a simple demonstration.      <span style="color:blue">Tao: please confirm if my change is ok. I am not sure. I think the general case of inner product should be sum of element-wise product instead of simply matrix product.</span>
+where $\langle \xi_1, \xi_2\rangle:=\text{tr}(\xi_1^\top M \xi_2)$ is an inner product defined using standard matrix operations and $M$ is any constant positive definite matrix. We will use $M=I$ from now on for a simple demonstration.
 
 Using tools from geometric mechanics (details are technical and thus omitted, but the treatment is actually intrinsic), one can show that the variational principle $\delta \int L dt = 0$ is equivalent to the following ODEs
     
@@ -277,7 +279,6 @@ $$
 \end{cases}
 $$
     
-<span style="color:blue"> need to explain $a$ and $b$ fixed. Since we only have the metric a=b=0, I wrote it in this special case </span>
 Here "position" variable $X$ and "momentum" variable $Q$ are again simply $n\times m$ matrices, 
 $\frac{\partial f}{\partial X}$ is the element-wise derivative (an $n\times m$ matrix too). Like before, although everything is based on matrices in Euclidean space and user needs not to worry about the manifold or constraints, the dynamics internally keeps everything on the manifold, while optimizing $f$.
 
@@ -312,7 +313,7 @@ If you'd also like to cite this blog, please add a 3rd citation as follows
 @misc{tao2023blog1,
   title = {Variational Optimization, and How It Works for Manifolds},
   author={Lingkai Kong and Molei Tao},
-  howpublished = {\url{https://itsdynamical.github.io/article/2023/05/17/variational-optimization-1.html}},
+  howpublished = {\url{https://itsdynamical.github.io/article/2023/06/01/variational-optimization-1.html}},
   note = {From blog <It's dynamical>}
 }
 ```
