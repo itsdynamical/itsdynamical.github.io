@@ -1,7 +1,6 @@
 ---
 layout: post
-title:  "Variational Optimization, and How It Simplifies Manifold Optimization"
-subtitle: "(Part I: the continuous side of the story)"
+title:  "Variational Optimization, and How It Simplifies Manifold Optimization (Part I: the continuous side of the story)"
 author:
 - Lingkai Kong
 - Molei Tao
