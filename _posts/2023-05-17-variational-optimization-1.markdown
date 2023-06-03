@@ -53,19 +53,18 @@ $$
 \end{cases}
 $$
 
-where the first equation is from the definition of $p_k$ and the second equation is by substituting $x_k$ in the first equation in Eq. (3) to the second equation in Eq. (3). Note that $\|f(y_k)-f(x_k)\|=o(h)$. And this discrete system is the discretization of the following ODE
+where the 1st equation is from the definition of $p_k$ and the 2nd equation is by plugging $x_k$ in the 1st equation of Eq. (3) in the 2nd equation of Eq. (3). Note $\|f(y_k)-f(x_k)\|=\mathcal{O}(h)$, and $t=hk=\sqrt{s}k$. Therefore, this update is a discretization of the following ODE (which is the $h\to 0$ limit of the iterative scheme)
 
 $$\begin{cases}
  \dot{x}&= p \\
  \dot{p} &= - \gamma(t) p  -\nabla f(x) 
 \end{cases}
 \tag{4}$$
-
-Note that $t\approx hk=\sqrt{s}k$. This gives the corresponding $\gamma=\frac{3}{t}$.
-
+where $\gamma=\frac{3}{t}$.
 
 
-This ODE is exactly [Newton's second law](https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion), which says the rate of change of momentum (in time) is given by the net force, which sums a frictional force $-\gamma p$ and a conservative force $-\nabla f$. $\gamma$ here thus serves as the friction coefficient, and it introduces energy dissipation, which leads $x(t)$ to converge to a local min of $f$ as $t\rightarrow\infty$.
+
+This ODE exactly corresponds to [Newton's second law](https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion), which says the rate of change of momentum (in time) is given by the net force, which in this case sums a frictional force $-\gamma p$ and a conservative force $-\nabla f$. $\gamma$ here thus serves as the friction coefficient, and it introduces energy dissipation, which leads $x(t)$ to converge to a local min of $f$ as $t\rightarrow\infty$.
 
 
 ### Quantification of Momentum-Induced Acceleration
