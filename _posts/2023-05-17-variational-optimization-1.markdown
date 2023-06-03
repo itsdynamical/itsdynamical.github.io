@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "Variational Optimization, and How It Simplifies Manifold Optimization &#13;&#10; (Part I: the continuous side of the story)"
+title:  "Variational Optimization, and How It Simplifies Manifold Optimization"
+subtitle: "(Part I: the continuous side of the story)"
 author:
 - Lingkai Kong
 - Molei Tao
@@ -71,7 +72,7 @@ This ODE is exactly [Newton's second law](https://en.wikipedia.org/wiki/Newton%2
 ### Quantification of Momentum-Induced Acceleration
 It is a common saying that momentum 'accelerates gradient descent'. Let's take a quick look at what this means quantitatively:
 
-Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_k)-f(x^\star)$ for discrete cases and $f(x_t)-f(x^*)$ for continuous cases. 
+Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_k)-f(x^*)$ for discrete cases and $f(x_t)-f(x^*)$ for continuous cases. 
 
 Assuming the $f$ to be convex and $L$-smooth ($L$-smooth means $\|\nabla f(x)-\nabla f(y)\|\le L\|x-y\|$ for all $x,y$), we have the following convergence rates:
 
@@ -168,8 +169,11 @@ Let's first list the main steps of the variational optimization methodology:
 3. Design a numerical discretization of the ODE, so that we get an algorithm that optimizes in discrete time
 
 Step 1 seems easy. For Euclidean optimization, we chose $L = r(t)\left(\frac{1}{2}\|\dot{x}(t)\|^2 - f(x(t))\right)$, i.e., {time discount} * ({kinetic energy} - {potential energy}). If $x(\cdot)$ is instead a trajectory on a Riemmanian manifold $\mathcal{M}$, $\dot{x}$ will be in the tangent space, and we can use the Riemannian metric to generalize the kinetic energy. The Lagrangian simply becomes
+
 $$L = r(t)\left(\frac{1}{2}\|\dot{x}(t)\|_\mathcal{M}^2 - f(x(t))\right)$$
+
 and the variational principle is again
+
 $$ \delta \int_0^T L(x,\dot{x},t) dt = 0 .$$
 
 But the difficulty is hidden under the rug. What does $\delta$ mean? Because $x(t)\in\mathcal{M}$, $\dot{x}(t)\in T_{x(t)}\mathcal{M}$, and the variation is actually with respect to all infinitesimal changes of $x$ that keeps it inside a **curved** function space. This means Step 2 is actually nontrivial.
@@ -213,7 +217,9 @@ $$
 meaning it is a skew-symmetric matrix. The space in which this left trivialized velocity lives is a fixed tangent space, $T_e \mathsf{SO}(n)$, known as the Lie algebra $\mathfrak{so}(n)$. Note it no longer depends on $X$!
 
 Now let's rename $X$ to be $g$, simply to remind ourselves that the trajectory $g(t)$ lives on a Lie group. In the $\mathsf{SO}(n)$ case, we found that the "position" variable $g$ and the new "velocity"/"momentum" needed to satisfy two constraints
+
 $$g^\top g=I, \quad\xi^\top+\xi=0.$$
+
 Remarkably, they are independent of each other, making the variational problem (i.e. finding the critical point of the action functional, with respect to trajectory variations that maintain the constraints) easier to solve. More precisely, we can again define a Lagrangian as
 
 $$L:=r(t)\left(\frac{1}{2}\langle \xi, \xi\rangle-f(g)\right),$$
