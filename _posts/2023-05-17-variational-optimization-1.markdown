@@ -60,6 +60,7 @@ $$\begin{cases}
  \dot{p} &= - \gamma(t) p  -\nabla f(x) 
 \end{cases}
 \tag{4}$$
+
 where $\gamma=\frac{3}{t}$.
 
 
