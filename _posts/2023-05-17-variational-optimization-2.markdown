@@ -12,7 +12,7 @@ comments_id: 1
 ---
 
 
-[Part I](variational-optimization-1.html) of the blog described how to obtain ODEs that are written in Euclidean space but optimize functions on manifolds. To turn them into actual optimization algorithms in discrete time, we need to discretize the time of the ODEs. This is not trivial, because a naive discretization would disrespect the fact that the exact solution remains on the manifold (see fig.1 left). Of course, one can always add an extra step that artificially pulls things back to the manifold, but this operation can be computational costly, and it partially cancels efforts and thus possibly slows down the convergence of the optimization too (see fig.1 right). We'd like to be computationally efficient (to experts: e.g., as little usage of exponential maps or projections as possible, computation complexity more dependence on $m$ but less on $n$ (we could have $n\gg m$), etc.) and avoid such cancellations as much as possible.
+[Part I](variational-optimization-1.html) of the blog described how to obtain ODEs that are written in Euclidean space but optimize functions on manifolds. To turn them into actual optimization algorithms, whose iterations correspond to evolution in discrete time, we need to discretize the time of the ODEs. This is not trivial, because a naive discretization would destroy the fact that the exact solution remains on the manifold (see Fig.1 left panel). Of course, one can always add an extra step that artificially pulls things back to the manifold (e.g., a projection), but this operation can be computational costly. In addition, it partially cancels efforts and thus possibly slows down the convergence of the optimization too (see Fig.1 right panel). We'd like to be computationally efficient and avoid such cancellations as much as possible (to experts, these mean, for example, as little usage of exponential maps or projections as possible, computation complexity more dependent on $m$ but less on $n$ (we could have $n\gg m$), smaller constants in error bounds, etc.)
 <p align="middle">
   <img src="https://github.com/itsdynamical/itsdynamical.github.io/blob/blog/images/Untitled-1.png?raw=true" width="200" />
   <img src="https://github.com/itsdynamical/itsdynamical.github.io/blob/blog/images/Untitled-2.png?raw=true" width="200" /> 
@@ -21,9 +21,11 @@ comments_id: 1
 Fig.1 - What will happen if we artifacially pull the point back?
 </p>
 
-In this Part II of the blog, we will construct such optimizers. Then we will showcase some interesting applications, such as [generically improving the performance of Transformer models](#Sec_Transformer), and [approximating Wasserstein distances in high dimensions](#Sec_PRW).  Codes of the generic optimizers as well as the applications can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
+In this Part II of the blog, we will construct such optimizers. Then we will showcase some interesting applications, such as [a general way to improve the performance of Transformer models](#Sec_Transformer), and [approximating Wasserstein distances in high dimensions](#Sec_PRW).  Codes of the generic optimizers, as well as these applications, can be found [here](https://github.com/konglk1203/VariationalStiefelOptimizer). 
+
+
 ## Reminder of the Optimization ODE, and Further Preparation
-As a continuation from [Part I](variational-optimization-1.html), we will focus on optimization on Stiefel manifold. The specific case of $\mathsf{SO}(n)$ Lie group will be a special case of the Stiefel manifold $\mathsf{St}(n,m)$ when $n=m$. The optimization dynamics, obtained from variational optimization, is
+As a continuation from [Part I](variational-optimization-1.html), we will focus on optimization on Stiefel manifold. The specific case of $\mathsf{SO}(n)$ Lie group will be a special case of the Stiefel manifold $\mathsf{St}(n,m)$ when $n=m$. The optimization dynamics, as obtained from variational optimization in [Part I](variational-optimization-1.html), is
 
 $$
 \begin{cases}
@@ -50,23 +52,16 @@ and as long as the initial condition satisfies $X(0)^T X(0)=I, Y(0)^T+Y(0)=0$ an
 When $n=m$, $V=0$, and we degenerate to the Lie group case (Eq.8a and 8b become just Eq.7 in [Part I](variational-optimization-1.html)).
 
 
-<!--
-Tao: to be conti.
--->
-
 ## Nontrivial Discretization for Computationally Efficient Structure Preservation
-Structure preserving means the manifold structure is preserved, i.e., keep the point always stays on the manifold. In the continuous case, the manifold structure is preserved since the variational problem is done among all the curves on the manifold.
+(Geometric) structure preservation means values of relevant variables stay on their respective manifolds. For our case, namely momentum-accelerated manifold optimization, it corresponds to satisfying 2 constraints:
+>- the position variable stays on the manifold
+>- the momentum variable stays on the tangent space of the manifold (based at the position variable)
 
-When it comes to the discretization of ODEs on the manifold, things gets harder. Imagine the surface of the unit ball in $\mathbb{R}^n$. If a particle is moving on the surface of the ball following some ODE, then its velocity/momentum must be always tangent to the ball. Otherwise, the particle will have a radical velocity and leaves the surface. 
+In the continuous case, the manifold structure is preserved since the variational problem is solved with respect to variations of curves on the manifold. This is nontrivial, but already accomplished (see above).
 
->So, 'preserving of manifold structure' under the context of gradient-based optimizer means the 2 constraints are satisfied:
->- the position stays on the manifold
->- the momentum stays on the tangent space of the position
+When it comes to discretzing ODEs on the manifold, on the other hand, things become even more difficult. One has to design a delicate numerical discretization, because otherwise the manifold structure may fail to be preserved, despite that the ODE in continuous time is structure preserving. This is often the case for off-the-shelf numerical schemes such as Euler methods or Runge-Kutta (of which both forward and backward Euler methods are special cases).
 
-If the numerical discretization is not done properly, the manifold structure may fail to be preserved. Imagine a point is moving continuously on the surface of a ball and of course, the trajectory is structure preserving. But after being discretized, at each time step, the point goes one step forward to a tangent direction by forward Euler. In this discrete case, the point is no longer on the ball but becomes a 'satellite' because you are in the space out of the ball. In other words, even the ODE is structure preserving, 
-> The discretization error from a Euclidean numerical integrator like forward-Euler or Runge-Kutta may lead to the loss of manifold structure.
-
-We use the example of $\mathsf{SO}(n)$ to give an example of structure preserving numerical integrator. The Stiefel case is too complicated to be shown here. The ODE optimizing on $\mathsf{SO}(n)$ is Eq. 7 and we copy it here again for convenience:
+Nevertheless, it is possible to discretize Eq.8 in a computationally cheap and accurate way, to obtain iterations that exactly satisfy both constraints for all steps. The construction is a bit convolved for the sake of computational efficiency, and interested readers can refer to [[Kong, Wang & Tao, 2023]](https://arxiv.org/pdf/2205.14173.pdf) for details. However, we will give some flavor of the tricks via a simpler example, namely when the manifold is $\mathsf{SO}(n)$. This is a special case of the Stiefel problem. The optimization ODE degenerates to Eq.7, and we copy it here for convenience:
 
 $$\begin{cases}
 \dot{g}=g\xi\\
@@ -74,7 +69,7 @@ $$\begin{cases}
 \end{cases}
 $$
 
-It can be viewed as the sum of 3 ODEs
+We adopt a vector field splitting approach and strategically decompose the right hand side (i.e. vector field) of the ODE as the sum of 3 vector fields, and consider their respective evolution dynamics:
 
 $$\begin{cases}
 \dot{g}=g\xi\\
@@ -92,65 +87,71 @@ $$\begin{cases}
 \end{cases}
 $$
 
-The ODEs are carefully to have nice properties, but one of the most important property is
+The specific splitting is such that these ODEs have nice properties, and one of the most important properties is
 > Each of the ODEs is structure preserving
 
-They are also easy to integrate: all of them are linear and have closed form solutions. Evolving them alternatively gives us a numerical integrator (Algo. 2 in the [Tao & Ohsawa, 2020](https://arxiv.org/pdf/2001.10006.pdf)) by the [Lie-Trotter Theorem](https://en.wikipedia.org/wiki/Lie_product_formula).
+They are also easy to integrate: all of them admit closed form solutions. Evolving them alternatively gives us a numerical integrator (Algo. 2 in the [Tao & Ohsawa, 2020](https://arxiv.org/pdf/2001.10006.pdf)) by the [Lie-Trotter Theorem](https://en.wikipedia.org/wiki/Lie_product_formula).
 
-Here, the structure perserving comes from the carefully chosen splitting: we found a splitting, such that each of them is structure perserving and also has a closed from solution. The advantage is, even in the discretization, no atifacial step is specially introduced for the curved manifold. We just perform a numerical splitting, which is what we always have to do when the ODE is nonlinear. The advantage is intuitive: it will emperically performs better. What's more, no artifacial step for the manifold makes it super cheap in the sence of computational cost per iteration.
+Because each evolution exactly preserves manifold structures, so does their composition (i.e. an alternation of these evolutions). Having simple closed form solutions also ensures a low computational cost (experts may question the cost of exponential map, which is needed for solving $\dot{g}=g\xi$, but even this can be avoided in a more advanced discretization; see [[Kong, Wang & Tao, 2023]](https://arxiv.org/pdf/2205.14173.pdf)).
+
+So, in the end we can obtain a computationally-very-efficient optimization algorithm, that stays exactly on the manifold forever, and faithfully captures the nice convergence property of the continuous-in-time optimization dynamics.
+
 
 ## Some Applications of Optimization on the Stiefel manifold
-Going through all these nontrivialities is worthful, as now we can finally have many great applications:
-### Subspace persuing: finding the best linear subspace for projection
-Subspace pursuing view a Stiefel matrix as a projection from $n$-dim spaces to a $m$-dim subspace with its columns. Suppose we have a dataset $\lbrace x_i \rbrace_{i=1}^k$ with $x_i$ in $\mathbb{R}^n$ and a function $f$. Sometimes, when the dimension $n$ is high, the function can be too costly to evaluate. To solve this difficulty, instead of evaluating our function $f(\lbrace x_i\rbrace_{i=1}^k)$ directly, we consider the optimization problem
+It is now time to see a subset of useful applications. 
+Let us begin with a simple problem, which is nevertheless at the heart of data sciences ---
 
-$$\max_{U\in \mathsf{St}(n,m)} f(\lbrace U^\top x_i\rbrace_{i=1}^k).$$ 
+### Leading EigenValue (LEV) problem
+Given an $n\times n$ matrix $A$, the task is to get the top $m$ eigenvalues. Simply computing all the $n$ eigenvalues and sorting them can be too expensive and wasteful in the case $m\ll n$, and modern data set often corresponds to huge $n$ (e.g., $\geq 10^6$) such that any method with $\mathcal{O}(n^3)$ computational complexity or storage (needed by traditional eigenvalue methods) is unaffordable.
 
-$U$ can be viewed as a projection to a low-dimensional subspace. We take the maximum of $U$ in the sense that the information is preserved as much as we can with the column of $U$ being a set of the orthonormal basis of the subspace. If we choose $m\ll n$, then this can significantly save computational resources. Here are 2 examples for subspace pursuing.
-#### Leading EigenValue (LEV) problem
-Given an $n\times n$ matrix $A$, the task is to get the top $m$ eigenvalues. Simply computing all the $n$ eigenvalues and sorting them can be too expensive and wasteful in the case $m\ll n$. Instead, we consider converting it to the following optimization problem by subspace pursuing.
-
+Instead, we can convert the problem to an optimization problem
 $$\max_{U\in \mathsf{St}(n,m)} \text{tr}(U^\top A U)$$
+where $U$ represents full bases of an m-dimensional subspace in the n-dimensional space, and we look for the best subspace to project $A$ to, such that $A$ restricted to that subspace has maximized sum of eigenvalues. The minimizer $U$ then will correspond to $A$'s $m$ leading eigenvalues.
 
-The maximum is in the sense that after being projected, the matrix $A$ has the largest sum of eigenvalues. If we want to use the Lie group optimizer, we need to write it as the following instead
+One may think this problem is too easy as the objective function is quadratic, but in fact this optimization problem is not even convex because there is a nonlinear equality constraint $U^\top U=I_{m\times m}$. Nevertheless, please read on if you'd like to see more complicated objective functions.
 
-$$\max_{R\in \mathsf{SO}(n)} \text{tr}(E^\top R^\top A RE)$$
 
-where 
 
-$$E=\begin{pmatrix}
-I_m\\
-0
-\end{pmatrix}
-$$
-
-is an $n\times m$ matrix with $I_m$ is the $m\times m$ identity matrix and $0$ is the $(n-m)\times m$ zero matrix. $RE$ is the first $m$ columns of the $\mathsf{SO}(n)$ matrix, which is the $\mathsf{St}(n,m)$ matrix $U$ above.
 
 <a id="Sec_PRW"> </a>
-#### Projection Robust Wasserstein (PRW) Distance
-The great idea of Projection Robust Wasserstein Distance ([[Paty & Cuturi, 2019]](https://arxiv.org/pdf/1901.08949.pdf), [[Lin et al. 2020]](https://arxiv.org/pdf/2006.07458.pdf)) can be viewed as a special case of subspace pursuing. Given 2 probability measures $\mu,\nu$ on $\mathbb{R}^n$, we denote the set of all couplings as $\Pi(\mu,\nu)$. We first define the Wasserstein distance between $\mu$ and $\nu$ as
+### Projection Robust Wasserstein (PRW) Distance
+Wasserstein distance is a very important notion in machine learning that quantifies the distance between two probability distributions. If these distributions are for high-dimension random variables, however, the computation of Wasserstein distance is very challenging; for example, 1) one needs a lot of sample points of the distributions (i.e. data), 2) the computation of the distance can be very expensive.
+
+One way to alleviate these issues is to use Projection Robust Wasserstein Distance (e.g., [[Paty & Cuturi, 2019]](https://arxiv.org/pdf/1901.08949.pdf), [[Lin et al. 2020]](https://arxiv.org/pdf/2006.07458.pdf)). Let's first review Wasserstein distance: given 2 probability measures $\mu,\nu$ on $\mathbb{R}^n$, we denote the set of all couplings as $\Pi(\mu,\nu)$. The Wasserstein distance between $\mu$ and $\nu$ can be defined as
 
 $$W_2(\mu,\nu) := \min_{\pi \in \Pi(\mu,\nu)} \left( \int \|x-y\|^2 \,d\pi(x,y) \right)^{1/2}$$
 
-It tries to find a coupling of $\mu$ and $\nu$ whose cost is the lowest. Solving this problem numerically can be costly when the dimension is high. The beautiful idea of PRW bypasses this difficulty by projecting the 2 distributions to lower dimensional subspaces and then computing the $W_2$ distance in this lower dimensional space instead, i.e.,
+Imagine $\mu$ and $\nu$ describe the shapes of a sand pile. Wasserstein distance basically tries to the least sand movement plan so that the $\mu$ pile becomes the $\nu$ pile. To deal with the case where the dimension of $x$ and $y$ is high, the beautiful idea of PRW for bypassing the curse of dimensionality is to project these 2 distributions to lower dimensional subspaces and then compute the distance in this lower dimensional space instead, and then use an outer loop to find the best subspace to project to. Mathematically, this is
 
 $$P_m(\mu,\nu) := \max_{U\in \mathsf{St}(n,m)} \min_{\pi \in \Pi(\mu,\nu)} \left( \int \|U^\top x - U^\top y\|^2 \,d\pi(x,y) \right)^{1/2}$$
 
-Same as mentioned before, the maximization is in the sense of keeping as much information as possible. This approach not only makes the problem computationally more manageable when $m\ll n$. What's more, since the dimensions that are relatively less important are omitted after projection, the noise is also reduced and only the essential component is left, which increases the robustness compared to the vanilla $W_2$ distance.
+The maximization is in order to keep as much information as possible. This approach not only makes the problem computationally more manageable, but also less data-hungry, when $m\ll n$. Moreover, since the dimensions that are relatively less important are omitted after projection, data noise is also reduced and only the essential component is left, which increases the robustness compared to the vanilla $W_2$ distance.
+
+This is again a Stiefel optimization problem, and it is important to be exactly on the manifold. Near enforcement of the manifold structure, such as by regularizer, will lead to approximate orthogonality which would totally destroy the subspace structure.
+
+
+### Subspace Pursue: finding the best subspace to approximate a high dim. optimization problem
+
+What do the aforementioned {Leading EigenValue problem} and {Projection Robust Wasserstein Distance example} have in common? They are both based on the idea of approximating a high dimensional problem by looking for an optimal low dimensional projection, and then solving the problem in that low dimensional subspace. In fact, we can make this strategy general, and this results in what we call *Subspace Pursue*. Both LEV and PRWD are instances of Subspace Pursue. Here is a precise, although not the most general, formulation of Subspace Pursue:
+
+Given a dataset $\lbrace x_i \rbrace_{i=1}^k$ and a function $f$, which abstractly denotes the outcome of some algorithm applied to this dataset. Suppose this algorithm can work with various datasets of different dimensions, meaning both $f(\lbrace x_i\rbrace_{i=1}^k)$ with $x_i$ in $\mathbb{R}^n$ and $f(\lbrace y_i\rbrace_{i=1}^k)$ with $y_i$ in $\mathbb{R}^m$
+are well-defined. If $f(\lbrace x_i\rbrace_{i=1}^k)$ is computationally too expensive to evaluate in dimension $n$, but not in dimension $m \ll n$, then we can consider instead the optimization problem
+$$\max_{U\in \mathsf{St}(n,m)} f(\lbrace U^\top x_i\rbrace_{i=1}^k).$$ 
+
+This is again a Stiefel optimization problem that can be pleasantly solved by optimizers described in this blog. It views a Stiefel matrix $U$ as a projection from $n$-dim spaces to a $m$-dim subspace, spanned by its (orthonormal) columns. The maximization is again to make sure that as much information as possible is captured by a low dimension approximation.
+
 
 <a id="Sec_Transformer"> </a>
 ### Orthogonality Boosts the Performance of Transformer Models
-Transformer [[Vaswani et al.]](https://arxiv.org/pdf/1706.03762.pdf) is a recent but extremely powerful deep learning architecture. It was first invented for NLP, but Vision Transformer (ViT) [[Dosovitskiy et al]](https://arxiv.org/pdf/2010.11929.pdf) also applies is to computer vision. The key to why the Transformer is powerful is that the attention layer is able to characterize long-distance interactions between elements in the sequence. The 'elements' mean 'words' in NLP tasks and 'patches' in CV tasks. We follow the traditional notations in [Vaswani et al.]. 
+Transformer [[Vaswani et al.]](https://arxiv.org/pdf/1706.03762.pdf) is an extremely powerful deep learning architecture. It was first invented for NLP, but then also applied to Computer Vision (e.g., Vision Transformer (ViT) [[Dosovitskiy et al]](https://arxiv.org/pdf/2010.11929.pdf)). One amazing thing of Transformer is, its attention layer is able to characterize long-distance interactions between elements in the sequence, where 'elements' mean 'words' in NLP tasks and 'patches' in CV tasks. 
 
-The trainable parameters in multi-headed attention layers are $W_i^Q, W_i^K\in \mathbb{R}^{d_{model}\times d_k}$ and $W_i^V\in \mathbb{R}^{d_{model}\times d_v}$ where $i$ stands for label of heads. The widely accepted intuition is
+Can non-Euclidean optimization make the self-attention mechanism even better? The main intuition is, many of the trainable parameters in attention layers aim at capturing correlations between elements, via training. If we require these correlations to be orthogonal to each other, information extracted by the attention mechanism can be less redudant and more accurate.
 
-> $W_i^Q$ and $W_i^K$ try to catch the interaction between elements and the information their extract will be less redundant if their columns are forced to be orthonormal.
+To try this idea out, one simply replaces the Euclidean optimization in training by Stiefel optimization, and it really works well in all tested cases. For example, for vanilla ViT trained *from scratch* for CIFAR 100, one only needs to modify 2 lines of code to enforce orthogonality, and then test error goes down from 33.1% to 30.2%.
 
-From the test result shown below, we can see that simply applying our optimizer to vanilla ViT improves the validation accuracy on CIFAR 10 from 9.05% to 8.32% (trained from scratch).
 
-<img src="https://raw.githubusercontent.com/itsdynamical/itsdynamical.github.io/blog/images/ViT.png" width="400">
-
-Blue: best within classes. Underscore: best over all classes. Green: unconstrained baseline
+## Thank you for reading!
+If you have any comment or question, please don't hesitate to let us know!
 
 ---
 ## 📝 How to Cite Me?
@@ -179,8 +180,6 @@ If you'd also like to cite this blog, please add a 3rd citation as follows
   note = {From blog <It's dynamical>}
 }
 ```
-
-## Thank you for reading!
 
 
 ## References
