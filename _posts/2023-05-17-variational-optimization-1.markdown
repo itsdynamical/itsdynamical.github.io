@@ -72,7 +72,7 @@ This ODE exactly corresponds to [Newton's second law](https://en.wikipedia.org/w
 ### Quantification of Momentum-Induced Acceleration
 It is a common saying that momentum 'accelerates gradient descent'. Let's take a quick look at what this means quantitatively:
 
-Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_k)-f(x^*)$ for discrete cases and $f(x_t)-f(x^*)$ for continuous cases. 
+Since we are minimizing the function $f$, we quantify the convergence by the 'error of optimization'. Mathematically, it is the difference between the function value we are trying to optimize and the oracle minimum value, i.e., $f(x_t)-f(x^\ast)$ for discrete cases and $f(x_t)-f(x^\ast)$ for continuous cases. 
 
 Assuming the $f$ to be convex and $L$-smooth ($L$-smooth means $\|\nabla f(x)-\nabla f(y)\|\le L\|x-y\|$ for all $x,y$), we have the following convergence rates:
 
