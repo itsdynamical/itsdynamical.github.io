@@ -105,7 +105,9 @@ Let us begin with a simple problem, which is nevertheless at the heart of data s
 Given an $n\times n$ matrix $A$, the task is to get the top $m$ eigenvalues. Simply computing all the $n$ eigenvalues and sorting them can be too expensive and wasteful in the case $m\ll n$, and modern data set often corresponds to huge $n$ (e.g., $\geq 10^6$) such that any method with $\mathcal{O}(n^3)$ computational complexity or storage (needed by traditional eigenvalue methods) is unaffordable.
 
 Instead, we can convert the problem to an optimization problem
+
 $$\max_{U\in \mathsf{St}(n,m)} \text{tr}(U^\top A U)$$
+
 where $U$ represents full bases of an m-dimensional subspace in the n-dimensional space, and we look for the best subspace to project $A$ to, such that $A$ restricted to that subspace has maximized sum of eigenvalues. The minimizer $U$ then will correspond to $A$'s $m$ leading eigenvalues.
 
 One may think this problem is too easy as the objective function is quadratic, but in fact this optimization problem is not even convex because there is a nonlinear equality constraint $U^\top U=I_{m\times m}$. Nevertheless, please read on if you'd like to see more complicated objective functions.
@@ -136,6 +138,7 @@ What do the aforementioned {Leading EigenValue problem} and {Projection Robust W
 
 Given a dataset $\lbrace x_i \rbrace_{i=1}^k$ and a function $f$, which abstractly denotes the outcome of some algorithm applied to this dataset. Suppose this algorithm can work with various datasets of different dimensions, meaning both $f(\lbrace x_i\rbrace_{i=1}^k)$ with $x_i$ in $\mathbb{R}^n$ and $f(\lbrace y_i\rbrace_{i=1}^k)$ with $y_i$ in $\mathbb{R}^m$
 are well-defined. If $f(\lbrace x_i\rbrace_{i=1}^k)$ is computationally too expensive to evaluate in dimension $n$, but not in dimension $m \ll n$, then we can consider instead the optimization problem
+
 $$\max_{U\in \mathsf{St}(n,m)} f(\lbrace U^\top x_i\rbrace_{i=1}^k).$$ 
 
 This is again a Stiefel optimization problem that can be pleasantly solved by optimizers described in this blog. It views a Stiefel matrix $U$ as a projection from $n$-dim spaces to a $m$-dim subspace, spanned by its (orthonormal) columns. The maximization is again to make sure that as much information as possible is captured by a low dimension approximation.
