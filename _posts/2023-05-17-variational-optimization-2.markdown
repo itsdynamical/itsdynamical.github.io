@@ -178,6 +178,7 @@ What do the aforementioned {Leading EigenValue problem} and {Projection Robust W
 
 Given a dataset $\lbrace x_i \rbrace_{i=1}^k$ and a function $f$, which abstractly denotes the outcome of some algorithm applied to this dataset. Suppose this algorithm can work with various datasets of different dimensions, meaning both $f(\lbrace x_i\rbrace_{i=1}^k)$ with $x_i$ in $\mathbb{R}^n$ and $f(\lbrace y_i\rbrace_{i=1}^k)$ with $y_i$ in $\mathbb{R}^m$
 are well-defined. If $f(\lbrace x_i\rbrace_{i=1}^k)$ is computationally too expensive to evaluate in dimension $n$, but not in dimension $m \ll n$, then we can consider instead the optimization problem
+
 $$\max_{U\in \mathsf{St}(n,m)} f(\lbrace U^\top x_i\rbrace_{i=1}^k).$$ 
 
 This is again a Stiefel optimization problem that can be pleasantly solved by optimizers described in this blog. It views a Stiefel matrix $U$ as a projection from $n$-dim spaces to a $m$-dim subspace, spanned by its (orthonormal) columns. The maximization is again to make sure that as much information as possible is captured by a low dimension approximation.
