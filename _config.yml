@@ -47,6 +47,10 @@ plugins:
   # - jemoji
   # - jekyll-remote-theme # add this line to the plugins list if you already have one
 
+# MathJax configuration
+mathjax: true
+mathjax_autoNumber: true
+
 # comments_id: ""
 
 
